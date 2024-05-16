@@ -383,7 +383,7 @@ namespace TweakMaker
                 });
             }
 
-            var dialogChangeRecipe = new DialogChangeRecipe(originalTemplate, _dump);
+            var dialogChangeRecipe = new DialogEditTemplate(originalTemplate, _dump, Templates.recipe);
             if (dialogChangeRecipe.ShowDialog(this) == DialogResult.OK)
             {
                 var newTemplate = dialogChangeRecipe.BuildTemplate();

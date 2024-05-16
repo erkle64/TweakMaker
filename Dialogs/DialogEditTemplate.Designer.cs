@@ -1,7 +1,7 @@
 ﻿
 namespace TweakMaker
 {
-    partial class DialogChangeRecipe
+    partial class DialogEditTemplate
     {
         /// <summary>
         /// Required designer variable.
@@ -158,8 +158,8 @@ namespace TweakMaker
             Controls.Add(panelScroll);
             Controls.Add(buttonSave);
             Controls.Add(buttonCancel);
-            Name = "DialogChangeRecipe";
-            Text = "DialogChangeRecipe";
+            Name = "DialogEditTemplate";
+            Text = "DialogEditTemplate";
             FormClosing += DialogChangeRecipe_FormClosing;
             tableLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)numericUpDown4).EndInit();

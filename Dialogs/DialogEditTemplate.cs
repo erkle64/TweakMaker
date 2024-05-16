@@ -1,43 +1,37 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using TweakMaker.ValueEditors;
 
 namespace TweakMaker
 {
-    public partial class DialogChangeRecipe : Form
+    public partial class DialogEditTemplate : Form
     {
         private readonly JObject _template;
         private readonly DumpData _dump;
 
         private readonly List<ValueEditor> _valueEditors = [];
 
-        public DialogChangeRecipe(JObject template, DumpData dump)
+        public DialogEditTemplate(JObject template, DumpData dump, Templates.Field[] fields)
         {
             InitializeComponent();
 
             _template = template;
             _dump = dump;
 
-            Text = $"Editing {template["name"]?.Value<string>() ?? "Item"}";
+            Text = $"Editing {template["name"]?.Value<string>() ?? template["identifier"]?.Value<string>() ?? "Item"}";
 
             tableTemplate.SuspendLayout();
 
             tableTemplate.RowCount = 0;
             tableTemplate.RowStyles.Clear();
 
-            AddRow<ValueEditorString>("Mod Identifier", "modIdentifier");
-            AddRow<ValueEditorString>("Name", "name");
-            AddRow<ValueEditorIconIdentifier>("Icon Identifier", "icon_identifier");
-            AddRow<ValueEditorString>("Category Identifier", "category_identifier");
-            AddRow<ValueEditorString>("Row Group Identifier", "rowGroup_identifier");
-            AddRow<ValueEditorBoolean>("Is Hidden In Crafting Frame", "isHiddenInCharacterCraftingFrame");
-            AddRow<ValueEditorBoolean>("Is Hidden By Narrative Trigger", "isHiddenByNarrativeTrigger");
-            AddRow<ValueEditorBoolean>("Is Never Unseen Recipe", "isNeverUnseenRecipe");
-            AddRow<ValueEditorString>("Narrative Trigger", "narrativeTrigger");
-            AddRow<ValueEditorRecipeInputs>("Item Inputs", "input_data");
-            AddRow<ValueEditorRecipeOutputs>("Item Outputs", "output_data");
-            AddRow<ValueEditorRecipeInputFluids>("Fluid Inputs", "inputElemental_data");
-            AddRow<ValueEditorRecipeOutputFluids>("Fluid Outputs", "outputElemental_data");
-            AddRow<ValueEditorItemIdentifier>("Related Item Template Identifier", "relatedItemTemplateIdentifier");
+            var addRow = typeof(DialogEditTemplate).GetMethod(nameof(AddRow), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Debug.Assert(addRow != null);
+            foreach (var field in fields)
+            {
+                addRow.MakeGenericMethod(field.editor).Invoke(this, [field.label, field.identifier]);
+            }
 
             tableTemplate.ResumeLayout();
             tableTemplate.PerformLayout();

@@ -24,7 +24,7 @@
     <Compile Update="Dialogs\DialogSelectIcon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Dialogs\DialogChangeRecipe.cs">
+    <Compile Update="Dialogs\DialogEditTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
