@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ObjectListView.Repack.NET6Plus" Version="2.9.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\ItemIdentifierControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\RecipeFluidControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Dialogs\DialogSelectIcon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\DialogChangeRecipe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

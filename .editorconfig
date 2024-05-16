@@ -1,0 +1,10 @@
+﻿[*.cs]
+
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = none
+
+# SYSLIB1054: Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+dotnet_diagnostic.SYSLIB1054.severity = none
+
+# CS0649: Field 'ListViewEx.NMHDR.idFrom' is never assigned to, and will always have its default value 0
+dotnet_diagnostic.CS0649.severity = none
