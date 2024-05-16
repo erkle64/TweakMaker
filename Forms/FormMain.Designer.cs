@@ -31,6 +31,8 @@ namespace TweakMaker
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            ToolStripMenuItem editToolStripMenuItem;
+            ToolStripMenuItem deleteToolStripMenuItem;
             menuStripMain = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
@@ -58,14 +60,28 @@ namespace TweakMaker
             columnHeaderValues = new OLVColumn();
             panelOuter = new Panel();
             contextMenuTweak = new ContextMenuStrip(components);
+            editToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
-            editrToolStripMenuItem = new ToolStripMenuItem();
             menuStripMain.SuspendLayout();
             panelFoundryPath.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)treeViewTweak).BeginInit();
             panelOuter.SuspendLayout();
             contextMenuTweak.SuspendLayout();
             SuspendLayout();
+            // 
+            // editToolStripMenuItem
+            // 
+            editToolStripMenuItem.Name = "editToolStripMenuItem";
+            editToolStripMenuItem.Size = new Size(107, 22);
+            editToolStripMenuItem.Text = "Edit";
+            editToolStripMenuItem.Click += editToolStripMenuItem_Click;
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(107, 22);
+            deleteToolStripMenuItem.Text = "Delete";
+            deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
             // 
             // menuStripMain
             // 
@@ -231,7 +247,6 @@ namespace TweakMaker
             // treeViewTweak
             // 
             treeViewTweak.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            treeViewTweak.CellEditActivation = ObjectListView.CellEditActivateMode.SingleClick;
             treeViewTweak.Columns.AddRange(new ColumnHeader[] { columnHeaderKeys, columnHeaderValues });
             treeViewTweak.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             treeViewTweak.Location = new Point(3, 35);
@@ -244,7 +259,7 @@ namespace TweakMaker
             treeViewTweak.UseHotControls = false;
             treeViewTweak.View = View.Details;
             treeViewTweak.VirtualMode = true;
-            treeViewTweak.CellRightClick += this.treeViewTweak_CellRightClick;
+            treeViewTweak.CellRightClick += treeViewTweak_CellRightClick;
             // 
             // columnHeaderKeys
             // 
@@ -258,6 +273,7 @@ namespace TweakMaker
             // 
             columnHeaderValues.AspectName = "Value";
             columnHeaderValues.CellEditUseWholeCell = true;
+            columnHeaderValues.IsEditable = false;
             columnHeaderValues.Text = "Value";
             columnHeaderValues.Width = 240;
             // 
@@ -273,21 +289,9 @@ namespace TweakMaker
             // 
             // contextMenuTweak
             // 
-            contextMenuTweak.Items.AddRange(new ToolStripItem[] { editrToolStripMenuItem, deleteToolStripMenuItem });
+            contextMenuTweak.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, deleteToolStripMenuItem });
             contextMenuTweak.Name = "contextMenuTweak";
             contextMenuTweak.Size = new Size(108, 48);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new Size(107, 22);
-            deleteToolStripMenuItem.Text = "Delete";
-            // 
-            // editrToolStripMenuItem
-            // 
-            editrToolStripMenuItem.Name = "editrToolStripMenuItem";
-            editrToolStripMenuItem.Size = new Size(107, 22);
-            editrToolStripMenuItem.Text = "Edit";
             // 
             // FormMain
             // 
@@ -299,6 +303,7 @@ namespace TweakMaker
             MainMenuStrip = menuStripMain;
             Name = "FormMain";
             Text = "Tweak Maker v0.1.0";
+            FormClosing += FormMain_FormClosing;
             menuStripMain.ResumeLayout(false);
             menuStripMain.PerformLayout();
             panelFoundryPath.ResumeLayout(false);
@@ -339,7 +344,7 @@ namespace TweakMaker
         private Panel panelOuter;
         private ToolStripMenuItem newToolStripMenuItem;
         private ContextMenuStrip contextMenuTweak;
-        private ToolStripMenuItem editrToolStripMenuItem;
+        private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

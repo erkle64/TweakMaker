@@ -2,14 +2,13 @@ using BrightIdeasSoftware;
 using Narod.SteamGameFinder;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using System.Windows.Forms.VisualStyles;
 
 namespace TweakMaker
 {
     public partial class FormMain : Form
     {
         private TweakEntryObject? _treeRoot = null;
-        private JObject _jsonRoot = [];
+        private JObject _jsonRoot;
 
         private readonly DumpData _dump = new();
         private readonly FormProgress _progressBox;
@@ -52,6 +51,12 @@ namespace TweakMaker
             {
                 return (x as TweakEntry)?.children;
             };
+
+            _jsonRoot = [];
+            _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
+            BuildTreeView(_jsonRoot, _treeRoot);
+            treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
+            treeViewTweak.ExpandAll();
         }
 
         private void SetFoundryPath(string path)
@@ -247,7 +252,7 @@ namespace TweakMaker
             {
                 if (entry.Value != null)
                 {
-                    var tweakEntry = BuildTweakEntry(entry.Key, entry.Value);
+                    var tweakEntry = BuildTweakEntry(treeNode, entry.Key, entry.Value);
                     if (tweakEntry != null) treeNode.children.Add(tweakEntry);
                 }
             }
@@ -260,24 +265,24 @@ namespace TweakMaker
             {
                 if (entry != null)
                 {
-                    var tweakEntry = BuildTweakEntry(index.ToString(), entry);
+                    var tweakEntry = BuildTweakEntry(treeNode, index.ToString(), entry);
                     if (tweakEntry != null) treeNode.children.Add(tweakEntry);
                 }
                 index++;
             }
         }
 
-        private TweakEntry? BuildTweakEntry(string key, JToken value)
+        private TweakEntry? BuildTweakEntry(TweakEntry? parent, string key, JToken value)
         {
             if (value is JObject objectValue)
             {
-                var childNode = new TweakEntryObject(key);
+                var childNode = new TweakEntryObject(parent, key, value);
                 BuildTreeView(objectValue, childNode);
                 return childNode;
             }
             else if (value is JArray arrayValue)
             {
-                var childNode = new TweakEntryArray(key);
+                var childNode = new TweakEntryArray(parent, key, value);
                 BuildTreeView(arrayValue, childNode);
                 return childNode;
             }
@@ -303,19 +308,19 @@ namespace TweakMaker
                     case JTokenType.Comment: break;
 
                     case JTokenType.Integer:
-                        childNode = new TweakEntryValue<int>(key, value?.Value<int>() ?? 0);
+                        childNode = new TweakEntryValue<int>(parent, key, value?.Value<int>() ?? 0, value);
                         break;
 
                     case JTokenType.Float:
-                        childNode = new TweakEntryValue<float>(key, value?.Value<float>() ?? 0.0f);
+                        childNode = new TweakEntryValue<float>(parent, key, value?.Value<float>() ?? 0.0f, value);
                         break;
 
                     case JTokenType.String:
-                        childNode = new TweakEntryValue<string>(key, value?.Value<string>() ?? "");
+                        childNode = new TweakEntryValue<string>(parent, key, value?.Value<string>() ?? "", value);
                         break;
 
                     case JTokenType.Boolean:
-                        childNode = new TweakEntryValue<bool>(key, value?.Value<bool>() ?? false);
+                        childNode = new TweakEntryValue<bool>(parent, key, value?.Value<bool>() ?? false, value);
                         break;
                 }
                 return childNode;
@@ -365,7 +370,58 @@ namespace TweakMaker
             }
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ChangeRecipe(string identifier)
+        {
+            var originalTemplate = (JObject)_dump.recipes[identifier].DeepClone();
+            if (TryGetTweak(out var tweakTemplate, "changes", "recipes", identifier))
+            {
+                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Replace,
+                    MergeNullValueHandling = MergeNullValueHandling.Ignore,
+                    PropertyNameComparison = StringComparison.InvariantCulture
+                });
+            }
+
+            var dialogChangeRecipe = new DialogChangeRecipe(originalTemplate, _dump);
+            if (dialogChangeRecipe.ShowDialog(this) == DialogResult.OK)
+            {
+                var newTemplate = dialogChangeRecipe.BuildTemplate();
+
+                if (TryGetTweak(out var currentTemplate, "changes", "recipes", identifier))
+                {
+                    currentTemplate.Merge(newTemplate, new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Replace,
+                        MergeNullValueHandling = MergeNullValueHandling.Ignore,
+                        PropertyNameComparison = StringComparison.InvariantCulture
+                    });
+                    SetTweak(currentTemplate, "changes", "recipes", identifier);
+                }
+                else
+                {
+                    SetTweak(newTemplate, "changes", "recipes", identifier);
+                }
+
+                _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
+                BuildTreeView(_jsonRoot, _treeRoot);
+                treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
+                treeViewTweak.ExpandAll();
+
+                SetTweakChanged();
+            }
+            dialogChangeRecipe.Dispose();
+        }
+
+        private void SetTweakChanged()
+        {
+            Text = string.IsNullOrEmpty(_currentTweakPath)
+                ? $"{_baseTitle} *"
+                : $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)} *";
+            _isTweakChanged = true;
+        }
+
+        private bool AskForSaveIfChanged()
         {
             if (_isTweakChanged)
             {
@@ -374,18 +430,55 @@ namespace TweakMaker
                     switch (MessageBox.Show("Do you want to save changes?", "Tweak Maker", MessageBoxButtons.YesNoCancel))
                     {
                         case DialogResult.Cancel:
-                            return;
+                            return false;
 
                         case DialogResult.Yes:
-                            saveToolStripMenuItem_Click(sender, e);
-                            break;
+                            return Save();
                     }
                 }
             }
 
+            return true;
+        }
+
+        private bool Save()
+        {
+            if (string.IsNullOrEmpty(_currentTweakPath))
+            {
+                return SaveAs();
+            }
+
+            File.WriteAllText(_currentTweakPath, _jsonRoot.ToString());
+
+            Text = $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)}";
+            _isTweakChanged = false;
+
+            return true;
+        }
+
+        private bool SaveAs()
+        {
+            if (saveAsFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _currentTweakPath = saveAsFileDialog.FileName;
+                File.WriteAllText(_currentTweakPath, _jsonRoot.ToString());
+
+                Text = $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)}";
+                _isTweakChanged = false;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!AskForSaveIfChanged()) return;
+
             _currentTweakPath = "";
             _jsonRoot = [];
-            _treeRoot = new TweakEntryObject("tweak");
+            _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
             BuildTreeView(_jsonRoot, _treeRoot);
             treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
             treeViewTweak.ExpandAll();
@@ -396,27 +489,13 @@ namespace TweakMaker
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_isTweakChanged)
-            {
-                using (new CenterWinDialog(this))
-                {
-                    switch (MessageBox.Show("Do you want to save changes?", "Tweak Maker", MessageBoxButtons.YesNoCancel))
-                    {
-                        case DialogResult.Cancel:
-                            return;
-
-                        case DialogResult.Yes:
-                            saveToolStripMenuItem_Click(sender, e);
-                            break;
-                    }
-                }
-            }
+            if (!AskForSaveIfChanged()) return;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 _currentTweakPath = openFileDialog.FileName;
                 _jsonRoot = JObject.Parse(File.ReadAllText(_currentTweakPath));
-                _treeRoot = new TweakEntryObject("tweak");
+                _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
                 BuildTreeView(_jsonRoot, _treeRoot);
                 treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
                 treeViewTweak.ExpandAll();
@@ -428,29 +507,12 @@ namespace TweakMaker
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_currentTweakPath))
-            {
-                saveAsToolStripMenuItem_Click(sender, e);
-            }
-            else
-            {
-                File.WriteAllText(_currentTweakPath, _jsonRoot.ToString());
-
-                Text = $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)}";
-                _isTweakChanged = false;
-            }
+            Save();
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(saveAsFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                _currentTweakPath = saveAsFileDialog.FileName;
-                File.WriteAllText(_currentTweakPath, _jsonRoot.ToString());
-
-                Text = $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)}";
-                _isTweakChanged = false;
-            }
+            SaveAs();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -482,54 +544,88 @@ namespace TweakMaker
             var dialogSelectTemplate = new DialogSelectTemplate(_dump.recipes.Values, string.Empty);
             if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
             {
-                var originalTemplate = (JObject)_dump.recipes[dialogSelectTemplate.SelectedIdentifier].DeepClone();
-                if (_jsonRoot.TryGetValue(dialogSelectTemplate.SelectedIdentifier, out var tweakTemplate))
-                {
-                    originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Replace,
-                        MergeNullValueHandling = MergeNullValueHandling.Ignore,
-                        PropertyNameComparison = StringComparison.InvariantCulture
-                    });
-                }
-
-                var dialogChangeRecipe = new DialogChangeRecipe(originalTemplate, _dump);
-                if (dialogChangeRecipe.ShowDialog(this) == DialogResult.OK)
-                {
-                    var newTemplate = dialogChangeRecipe.BuildTemplate();
-
-                    if (TryGetTweak(out var currentTemplate, "changes", "recipes", dialogSelectTemplate.SelectedIdentifier))
-                    {
-                        currentTemplate.Merge(newTemplate, new JsonMergeSettings
-                        {
-                            MergeArrayHandling = MergeArrayHandling.Replace,
-                            MergeNullValueHandling = MergeNullValueHandling.Ignore,
-                            PropertyNameComparison = StringComparison.InvariantCulture
-                        });
-                        SetTweak(currentTemplate, "changes", "recipes", dialogSelectTemplate.SelectedIdentifier);
-                    }
-                    else
-                    {
-                        SetTweak(newTemplate, "changes", "recipes", dialogSelectTemplate.SelectedIdentifier);
-                    }
-
-                    _treeRoot = new TweakEntryObject("tweak");
-                    BuildTreeView(_jsonRoot, _treeRoot);
-                    treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
-                    treeViewTweak.ExpandAll();
-
-                    Text = string.IsNullOrEmpty(_currentTweakPath)
-                        ? $"{_baseTitle} *"
-                        : $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)} *";
-                    _isTweakChanged = true;
-                }
-                dialogChangeRecipe.Dispose();
+                var identifier = dialogSelectTemplate.SelectedIdentifier;
+                ChangeRecipe(identifier);
             }
             dialogSelectTemplate.Dispose();
         }
 
         private void treeViewTweak_CellRightClick(object sender, CellRightClickEventArgs e)
         {
+            if (e.ColumnIndex != 0) return;
+            if (e.Model is not TweakEntry tweakEntry) return;
+
+            if (tweakEntry.Depth == 3 || tweakEntry.Depth == 4)
+            {
+                contextMenuTweak.Tag = tweakEntry;
+                contextMenuTweak.Show(treeViewTweak, new Point(e.Location.X, e.Location.Y));
+            }
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (contextMenuTweak.Tag is not TweakEntry tweakEntry) return;
+
+            if (tweakEntry.Depth == 4)
+            {
+                Debug.Assert(tweakEntry.Parent != null);
+                tweakEntry = tweakEntry.Parent;
+            }
+
+            if (tweakEntry.Parent?.Key == "recipes")
+            {
+                if (tweakEntry.Parent?.Parent?.Key == "changes")
+                {
+                    ChangeRecipe(tweakEntry.Key);
+                }
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (contextMenuTweak.Tag is not TweakEntry tweakEntry) return;
+
+            using (new CenterWinDialog(this))
+            {
+                if (MessageBox.Show($"Delete {tweakEntry.Key}?", tweakEntry.Depth == 3 ? "Delete Tweak Entry" : "Delete Tweak Field", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    tweakEntry.Delete();
+                    SetTweakChanged();
+
+                    if (tweakEntry.Parent?.children?.Count == 0)
+                    {
+                        tweakEntry.Parent.Delete();
+                        if (tweakEntry.Parent?.Parent?.children?.Count == 0)
+                        {
+                            tweakEntry.Parent.Parent.Delete();
+                            if (tweakEntry.Depth == 4 && tweakEntry.Parent?.Parent?.Parent?.children?.Count == 0)
+                            {
+                                tweakEntry.Parent.Parent.Parent.Delete();
+                                treeViewTweak.RefreshObject(tweakEntry.Parent.Parent.Parent.Parent);
+                            }
+                            else
+                            {
+                                Debug.Assert(tweakEntry.Parent != null);
+                                treeViewTweak.RefreshObject(tweakEntry.Parent.Parent.Parent);
+                            }
+                        }
+                        else
+                        {
+                            Debug.Assert(tweakEntry.Parent != null);
+                            treeViewTweak.RefreshObject(tweakEntry.Parent.Parent);
+                        }
+                    }
+                    else
+                    {
+                        treeViewTweak.RefreshObject(tweakEntry.Parent);
+                    }
+                }
+            }
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!AskForSaveIfChanged()) e.Cancel = true;
         }
     }
 }

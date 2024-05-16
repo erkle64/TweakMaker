@@ -81,18 +81,6 @@ namespace TweakMaker
             Close();
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            using (new CenterWinDialog(this))
-            {
-                if (MessageBox.Show("All changes will be lost.\nCancel anyway?", "Cancel", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                {
-                    DialogResult = DialogResult.Cancel;
-                    Close();
-                }
-            }
-        }
-
         private void DialogChangeRecipe_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult == DialogResult.OK) return;

@@ -124,7 +124,6 @@ namespace TweakMaker
             buttonCancel.TabIndex = 1;
             buttonCancel.Text = "Cancel";
             buttonCancel.UseVisualStyleBackColor = true;
-            buttonCancel.Click += buttonCancel_Click;
             // 
             // buttonSave
             // 
@@ -161,7 +160,7 @@ namespace TweakMaker
             Controls.Add(buttonCancel);
             Name = "DialogChangeRecipe";
             Text = "DialogChangeRecipe";
-            FormClosing += this.DialogChangeRecipe_FormClosing;
+            FormClosing += DialogChangeRecipe_FormClosing;
             tableLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)numericUpDown4).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown5).EndInit();
