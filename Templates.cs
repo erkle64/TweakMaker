@@ -11,7 +11,7 @@ namespace TweakMaker
             public string identifier = identifier;
         }
 
-        public static Field[] recipe = [
+        public static readonly Field[] recipe = [
             new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),
             new Field(typeof(ValueEditorString), "Name", "name"),
             new Field(typeof(ValueEditorIconIdentifier), "Icon Identifier", "icon_identifier"),
@@ -25,7 +25,12 @@ namespace TweakMaker
             new Field(typeof(ValueEditorRecipeOutputs), "Item Outputs", "output_data"),
             new Field(typeof(ValueEditorRecipeInputFluids), "Fluid Inputs", "inputElemental_data"),
             new Field(typeof(ValueEditorRecipeOutputFluids), "Fluid Outputs", "outputElemental_data"),
-            new Field(typeof(ValueEditorItemIdentifier), "Related Item Template Identifier", "relatedItemTemplateIdentifier")
+            new Field(typeof(ValueEditorItemIdentifier), "Related Item Template Identifier", "relatedItemTemplateIdentifier"),
+            new Field(typeof(ValueEditorInteger), "Sorting Order In Row Group", "sortingOrderWithinRowGroup"),
+            new Field(typeof(ValueEditorInteger), "Crafting Time(milliseconds)", "timeMs"),
+            new Field(typeof(ValueEditorStringList), "tags", "tags"),
+            new Field(typeof(ValueEditorBoolean), "Force Show Outputs In Tooltips", "forceShowOutputsAtTooltips"),
+            new Field(typeof(ValueEditorStringMultiline), "Extra Info Tooltip Text", "extraInfoTooltipText"),
         ];
     }
 }

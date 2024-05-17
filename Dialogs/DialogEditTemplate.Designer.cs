@@ -148,9 +148,8 @@ namespace TweakMaker
             panelScroll.TabIndex = 3;
             panelScroll.Resize += panelScroll_Resize;
             // 
-            // DialogChangeRecipe
+            // DialogEditTemplate
             // 
-            AcceptButton = buttonSave;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;

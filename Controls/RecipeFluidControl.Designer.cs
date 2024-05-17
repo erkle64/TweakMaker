@@ -63,7 +63,6 @@
             listView.Columns.AddRange(new ColumnHeader[] { columnHeaderIdentifier, columnHeaderName, columnHeaderAmount });
             listView.DoubleClickActivation = true;
             listView.FullRowSelect = true;
-            listView.LabelEdit = true;
             listView.Location = new Point(0, 0);
             listView.Name = "listView";
             listView.Size = new Size(745, 92);

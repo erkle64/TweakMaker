@@ -18,6 +18,9 @@
     <Compile Update="Controls\ItemIdentifierControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Controls\StringListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\RecipeFluidControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

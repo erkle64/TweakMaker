@@ -246,16 +246,23 @@ namespace TweakMaker
             // 
             // treeViewTweak
             // 
+            treeViewTweak.AllowColumnReorder = true;
+            treeViewTweak.AlternateRowBackColor = Color.LightCyan;
             treeViewTweak.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            treeViewTweak.AutoArrange = false;
             treeViewTweak.Columns.AddRange(new ColumnHeader[] { columnHeaderKeys, columnHeaderValues });
+            treeViewTweak.FullRowSelect = true;
             treeViewTweak.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             treeViewTweak.Location = new Point(3, 35);
             treeViewTweak.MultiSelect = false;
             treeViewTweak.Name = "treeViewTweak";
             treeViewTweak.SelectAllOnControlA = false;
+            treeViewTweak.SelectColumnsOnRightClick = false;
+            treeViewTweak.SelectColumnsOnRightClickBehaviour = ObjectListView.ColumnSelectBehaviour.None;
             treeViewTweak.ShowGroups = false;
             treeViewTweak.Size = new Size(682, 422);
             treeViewTweak.TabIndex = 2;
+            treeViewTweak.UseAlternatingBackColors = true;
             treeViewTweak.UseHotControls = false;
             treeViewTweak.View = View.Details;
             treeViewTweak.VirtualMode = true;
@@ -265,7 +272,11 @@ namespace TweakMaker
             // 
             columnHeaderKeys.AspectName = "Key";
             columnHeaderKeys.FillsFreeSpace = true;
+            columnHeaderKeys.Hideable = false;
             columnHeaderKeys.IsEditable = false;
+            columnHeaderKeys.MaximumWidth = 10000;
+            columnHeaderKeys.MinimumWidth = 40;
+            columnHeaderKeys.Sortable = false;
             columnHeaderKeys.Text = "Key";
             columnHeaderKeys.Width = 240;
             // 
@@ -273,9 +284,14 @@ namespace TweakMaker
             // 
             columnHeaderValues.AspectName = "Value";
             columnHeaderValues.CellEditUseWholeCell = true;
+            columnHeaderValues.FillsFreeSpace = true;
+            columnHeaderValues.Hideable = false;
             columnHeaderValues.IsEditable = false;
+            columnHeaderValues.MaximumWidth = 10000;
+            columnHeaderValues.MinimumWidth = 40;
+            columnHeaderValues.Sortable = false;
             columnHeaderValues.Text = "Value";
-            columnHeaderValues.Width = 240;
+            columnHeaderValues.Width = 320;
             // 
             // panelOuter
             // 
@@ -344,7 +360,5 @@ namespace TweakMaker
         private Panel panelOuter;
         private ToolStripMenuItem newToolStripMenuItem;
         private ContextMenuStrip contextMenuTweak;
-        private ToolStripMenuItem editToolStripMenuItem;
-        private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

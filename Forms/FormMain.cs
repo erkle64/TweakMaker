@@ -52,6 +52,9 @@ namespace TweakMaker
                 return (x as TweakEntry)?.children;
             };
 
+            columnHeaderKeys.FreeSpaceProportion = 4;
+            columnHeaderValues.FreeSpaceProportion = 3;
+
             _jsonRoot = [];
             _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
             BuildTreeView(_jsonRoot, _treeRoot);

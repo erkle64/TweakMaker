@@ -1,6 +1,6 @@
 ﻿namespace TweakMaker.Controls
 {
-    partial class RecipeItemControl
+    partial class StringListControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,49 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ColumnHeader columnHeaderIdentifier;
-            ColumnHeader columnHeaderAmount;
-            ColumnHeader columnHeaderName;
-            columnHeaderPercentage = new ColumnHeader();
+            ColumnHeader columnHeaderValue;
             listView = new ListViewEx.ListViewEx();
             buttonAdd = new Button();
             buttonRemove = new Button();
-            numericUpDownAmount = new NumericUpDown();
-            numericUpDownPercentage = new NumericUpDown();
-            columnHeaderIdentifier = new ColumnHeader();
-            columnHeaderAmount = new ColumnHeader();
-            columnHeaderName = new ColumnHeader();
-            ((System.ComponentModel.ISupportInitialize)numericUpDownAmount).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDownPercentage).BeginInit();
+            textBox = new TextBox();
+            columnHeaderValue = new ColumnHeader();
             SuspendLayout();
             // 
-            // columnHeaderIdentifier
+            // columnHeaderValue
             // 
-            columnHeaderIdentifier.Text = "Identifier";
-            columnHeaderIdentifier.Width = 180;
-            // 
-            // columnHeaderAmount
-            // 
-            columnHeaderAmount.Text = "Amount";
-            columnHeaderAmount.Width = 80;
-            // 
-            // columnHeaderName
-            // 
-            columnHeaderName.Text = "Name";
-            columnHeaderName.Width = 180;
-            // 
-            // columnHeaderPercentage
-            // 
-            columnHeaderPercentage.Text = "Percentage";
-            columnHeaderPercentage.Width = 80;
+            columnHeaderValue.Text = "Identifier";
+            columnHeaderValue.Width = 400;
             // 
             // listView
             // 
             listView.AllowColumnReorder = true;
             listView.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            listView.Columns.AddRange(new ColumnHeader[] { columnHeaderIdentifier, columnHeaderName, columnHeaderAmount, columnHeaderPercentage });
+            listView.Columns.AddRange(new ColumnHeader[] { columnHeaderValue });
             listView.DoubleClickActivation = true;
             listView.FullRowSelect = true;
+            listView.HeaderStyle = ColumnHeaderStyle.None;
+            listView.LabelEdit = true;
             listView.Location = new Point(0, 0);
             listView.Name = "listView";
             listView.Size = new Size(745, 92);
@@ -101,37 +80,26 @@
             buttonRemove.UseVisualStyleBackColor = true;
             buttonRemove.Click += buttonRemove_Click;
             // 
-            // numericUpDownAmount
+            // textBox
             // 
-            numericUpDownAmount.Location = new Point(8, 8);
-            numericUpDownAmount.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
-            numericUpDownAmount.Name = "numericUpDownAmount";
-            numericUpDownAmount.Size = new Size(120, 23);
-            numericUpDownAmount.TabIndex = 3;
-            numericUpDownAmount.Visible = false;
+            textBox.Location = new Point(0, 0);
+            textBox.Name = "textBox";
+            textBox.Size = new Size(100, 23);
+            textBox.TabIndex = 3;
+            textBox.Visible = false;
             // 
-            // numericUpDownPercentage
-            // 
-            numericUpDownPercentage.Location = new Point(8, 31);
-            numericUpDownPercentage.Name = "numericUpDownPercentage";
-            numericUpDownPercentage.Size = new Size(120, 23);
-            numericUpDownPercentage.TabIndex = 4;
-            numericUpDownPercentage.Visible = false;
-            // 
-            // RecipeItemControl
+            // StringListControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(numericUpDownPercentage);
-            Controls.Add(numericUpDownAmount);
+            Controls.Add(textBox);
             Controls.Add(buttonRemove);
             Controls.Add(buttonAdd);
             Controls.Add(listView);
-            Name = "RecipeItemControl";
+            Name = "StringListControl";
             Size = new Size(826, 92);
-            ((System.ComponentModel.ISupportInitialize)numericUpDownAmount).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDownPercentage).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -139,8 +107,6 @@
         private ListViewEx.ListViewEx listView;
         private Button buttonAdd;
         private Button buttonRemove;
-        private ColumnHeader columnHeaderPercentage;
-        private NumericUpDown numericUpDownAmount;
-        private NumericUpDown numericUpDownPercentage;
+        private TextBox textBox;
     }
 }

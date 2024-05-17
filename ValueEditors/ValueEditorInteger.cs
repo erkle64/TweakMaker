@@ -22,6 +22,8 @@ namespace TweakMaker.ValueEditors
             _numericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _numericUpDown.Name = $"numericUpDown_{_labelText}";
             _numericUpDown.TabIndex = rowIndex + 1;
+            _numericUpDown.Minimum = 0;
+            _numericUpDown.Maximum = int.MaxValue;
             _numericUpDown.Value = GetOriginalValue<int>();
             ((System.ComponentModel.ISupportInitialize)_numericUpDown).EndInit();
         }
