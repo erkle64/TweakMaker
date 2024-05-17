@@ -2,9 +2,9 @@
 
 namespace TweakMaker.Controls
 {
-    public partial class StringListControl : UserControl
+    public partial class GenericItemActionsControl : UserControl
     {
-        public StringListControl()
+        public GenericItemActionsControl()
         {
             InitializeComponent();
         }
@@ -14,9 +14,11 @@ namespace TweakMaker.Controls
             listView.Items.Clear();
             if (data != null)
             {
-                foreach (var entry in data)
+                foreach (JObject entry in data.Cast<JObject>())
                 {
-                    listView.Items.Add(new ListViewItem([entry.ToString()]));
+                    var action = entry?["action"]?.ToString() ?? "";
+                    var hotkey = entry?["hotkey"]?.ToString() ?? "";
+                    listView.Items.Add(new ListViewItem(new string[] { action, hotkey }));
                 }
             }
         }
@@ -27,7 +29,15 @@ namespace TweakMaker.Controls
 
             foreach (ListViewItem item in listView.Items)
             {
-                data.Add(new JValue(item.SubItems[0].Text));
+                var action = item.SubItems[0].Text;
+                var hotkey = item.SubItems[1].Text;
+
+                var entry = new JObject
+                {
+                    { "action", action },
+                    { "hotkey", hotkey }
+                };
+                data.Add(entry);
             }
 
             return data;
@@ -37,16 +47,14 @@ namespace TweakMaker.Controls
         {
             if (e.Item != null)
             {
-                if (e.SubItem == 0)
-                {
-                    listView.StartEditing(textBox, e.Item, e.SubItem);
-                }
+                listView.StartEditing(textBox, e.Item, e.SubItem);
             }
         }
 
+        private static readonly string[] defaultItems = ["action", ""];
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            listView.Items.Add(new ListViewItem(["new tag"]));
+            listView.Items.Add(new ListViewItem(defaultItems));
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)

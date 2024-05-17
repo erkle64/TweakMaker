@@ -8,9 +8,11 @@ namespace TweakMaker
         private readonly IEnumerable<JObject> _templates;
         private readonly string _defaultSelection;
 
-        public DialogSelectTemplate(IEnumerable<JObject> templates, string defaultSelection)
+        public DialogSelectTemplate(string title, IEnumerable<JObject> templates, string defaultSelection)
         {
             InitializeComponent();
+
+            Text = title;
 
             _templates = templates;
             _defaultSelection = defaultSelection;

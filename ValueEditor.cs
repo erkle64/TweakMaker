@@ -8,6 +8,7 @@ namespace TweakMaker
         protected JObject _template = [];
         protected string _key = string.Empty;
         protected DumpData _dump = new();
+        protected string[] _extraValues = [];
 
         private Label? _label;
 
@@ -25,12 +26,13 @@ namespace TweakMaker
 
         public abstract JToken? GetNewToken();
 
-        public void Initialize(string labelText, JObject template, string key, DumpData dump)
+        public void Initialize(string labelText, JObject template, string key, DumpData dump, string[] extraValues)
         {
             _labelText = labelText;
             _template = template;
             _key = key;
             _dump = dump;
+            _extraValues = extraValues;
         }
 
         public virtual void InitializeComponents(TableLayoutPanel table, int rowIndex)

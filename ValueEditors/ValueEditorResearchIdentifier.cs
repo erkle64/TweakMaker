@@ -2,7 +2,7 @@
 
 namespace TweakMaker.ValueEditors
 {
-    public class ValueEditorItemIdentifier : ValueEditor
+    public class ValueEditorResearchIdentifier : ValueEditor
     {
         private TemplateIdentifierControl? _templateIdentifierControl;
 
@@ -15,11 +15,11 @@ namespace TweakMaker.ValueEditors
         {
             base.InitializeComponents(table, rowIndex);
 
-            _templateIdentifierControl = new(_dump.items.Values);
+            _templateIdentifierControl = new(_dump.researches.Values);
             table.Controls.Add(_templateIdentifierControl, 1, rowIndex);
 
             _templateIdentifierControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            _templateIdentifierControl.Name = $"ItemIdentifier_{_labelText}";
+            _templateIdentifierControl.Name = $"ResearchIdentifier_{_labelText}";
             _templateIdentifierControl.TabIndex = rowIndex + 1;
             _templateIdentifierControl.Identifier = GetOriginalValue<string>() ?? string.Empty;
         }

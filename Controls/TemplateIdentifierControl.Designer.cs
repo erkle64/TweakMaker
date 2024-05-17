@@ -1,6 +1,6 @@
 ﻿namespace TweakMaker
 {
-    partial class ItemIdentifierControl
+    partial class TemplateIdentifierControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -58,7 +58,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(button);
             Controls.Add(textBox);
-            Name = "ItemIdentifierControl";
+            Name = "TemplateIdentifierControl";
             Size = new Size(537, 23);
             ResumeLayout(false);
             PerformLayout();

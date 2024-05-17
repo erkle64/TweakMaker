@@ -1,15 +1,16 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 
 namespace TweakMaker
 {
-    public partial class ItemIdentifierControl : UserControl
+    public partial class TemplateIdentifierControl : UserControl
     {
         [Browsable(true)]
         [Category("Action")]
         [Description("Invoked when user changes text")]
         public event EventHandler? ValueChanged;
 
-        private readonly DumpData? _dump;
+        private readonly IEnumerable<JObject> _templates;
 
         public string Identifier
         {
@@ -17,17 +18,17 @@ namespace TweakMaker
             set => textBox.Text = value;
         }
 
-        public ItemIdentifierControl(DumpData? dumpData)
+        public TemplateIdentifierControl(IEnumerable<JObject> templates)
         {
             InitializeComponent();
-            _dump = dumpData;
+            _templates = templates;
         }
 
         private void button_Click(object sender, EventArgs e)
         {
-            if (_dump == null) return;
+            if (_templates == null) return;
 
-            var dialog = new DialogSelectTemplate(_dump.items.Values, Identifier);
+            var dialog = new DialogSelectTemplate("Select Template", _templates, Identifier);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Identifier = dialog.SelectedIdentifier;

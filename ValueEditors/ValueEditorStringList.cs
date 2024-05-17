@@ -22,7 +22,7 @@ namespace TweakMaker.ValueEditors
             _stringListControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _stringListControl.Name = $"StringList_{_labelText}";
             _stringListControl.TabIndex = rowIndex + 1;
-            _stringListControl.LoadData(_dump, GetOriginalToken() as JArray);
+            _stringListControl.LoadData(GetOriginalToken() as JArray);
         }
     }
 }

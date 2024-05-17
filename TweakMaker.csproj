@@ -15,7 +15,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\ItemIdentifierControl.cs">
+    <Compile Update="Controls\GenericItemActionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\Vector4Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\Vector3Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ToggleableModesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\TemplateIdentifierControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\StringListControl.cs">

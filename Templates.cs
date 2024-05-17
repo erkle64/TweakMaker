@@ -4,12 +4,87 @@ namespace TweakMaker
 {
     public static class Templates
     {
-        public struct Field(Type editor, string label, string identifier)
+        public struct Field(Type editor, string label, string identifier, params string[] extraValues)
         {
             public Type editor = editor;
             public string label = label;
             public string identifier = identifier;
+            public string[] extraValues = extraValues;
         }
+
+        public static readonly Field[] item = [
+            new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),
+            new Field(typeof(ValueEditorString), "Name", "name"),
+            new Field(typeof(ValueEditorBoolean), "Include In Demo", "includeInDemo"),
+            new Field(typeof(ValueEditorBoolean), "Include In Creative Mode", "includeInCreativeMode"),
+            new Field(typeof(ValueEditorString), "Creative Mode Category_str", "creativeModeCategory_str"),
+            new Field(typeof(ValueEditorIconIdentifier), "Icon Identifier", "icon_identifier"),
+            new Field(typeof(ValueEditorInteger), "Stack Size", "stackSize"),
+            new Field(typeof(ValueEditorBoolean), "Is Hidden Item", "isHiddenItem"),
+            new Field(typeof(ValueEditorFlags), "Flags", "flags",
+                "BUILDABLE_OBJECT",
+                "HANDHELD",
+                "TRAIN_TRACKS",
+                "BURNABLE",
+                "MINING_TOOL",
+                "SCIENCE_ITEM",
+                "TRAIN_VEHICLE",
+                "RAIL_MINER",
+                "AL_STARTER",
+                "JET_PACK_FUEL",
+                "EMOTE",
+                "CONSTRUCTION_MATERIAL",
+                "CONSTRUCTION_RUBBLE",
+                "PLANT_SEED",
+                "SALES_CURRENCY",
+                "SALES_ITEM",
+                "SALES_ITEM_ASSEMBLY_LINE"),
+            new Field(typeof(ValueEditorEnum), "Toggleable Mode Type", "toggleableModeType",
+                "Default",
+                "MultipleBuildings",
+                "TrainTracks"),
+            new Field(typeof(ValueEditorToggleableModes), "Toggleable Modes", "toggleableModes"),
+            new Field(typeof(ValueEditorGenericItemActionButtons), "Generic Item Action Buttons", "genericItemActionButtons"),
+            new Field(typeof(ValueEditorBoolean), "Skip For Running Index Generation", "skipForRunningIdxGeneration"),
+            new Field(typeof(ValueEditorEnum), "Item Destroy Flag", "itemDestroyFlags",
+                "Regular",
+                "Disallow",
+                "DisallowLastInInventory"),
+            new Field(typeof(ValueEditorVector3), "Mesh Scale", "meshScale"),
+            new Field(typeof(ValueEditorVector4), "Mesh Rotation", "meshRotation"),
+            new Field(typeof(ValueEditorBuildingIdentifier), "Buildable Object Identifer", "buildableObjectIdentifer"),
+            new Field(typeof(ValueEditorFlags), "handheldSubType", "Handheld Subtype", "MINING_TOOL", "PLUMBER_TOOL", "CABLE_TOOL", "DYNAMITE", "DYNAMITE_REMOTE_CONTROL", "BLUEPRINT_TOOL", "ORE_VEIN_SCANNER", "MODULAR_BUILDING_PLANNER", "COLOR_TOOL"),
+            new Field(typeof(ValueEditorBoolean), "Miner Shake Right Arm On Use", "handheld_miner_shakeRightArmOnUse"),
+            new Field(typeof(ValueEditorItemIdentifier), "Default Power Pole Item", "handheld_defaultPowerPoleItemTemplate_str"),
+            new Field(typeof(ValueEditorBoolean), "Supports Focus Mode", "supportsFocusMode"),
+            new Field(typeof(ValueEditorInteger), "Mining Time Reduction In Sec", "miningTimeReductionInSec"),
+            new Field(typeof(ValueEditorFloat), "Mining Range", "miningRange"),
+            new Field(typeof(ValueEditorInteger), "Explosion Radius", "explosionRadius"),
+            new Field(typeof(ValueEditorFloat), "Burnable Fuel Value (KJ)", "burnable_fuelValueKJ_str"),
+            new Field(typeof(ValueEditorItemIdentifier), "Burnable Residual Item", "burnable_residualItemTemplate_str"),
+            new Field(typeof(ValueEditorInteger), "Burnable Residual Item Count", "burnable_residualItemTemplate_count"),
+            new Field(typeof(ValueEditorItemIdentifier), "Sales Item Currency Item", "salesItem_currencyIdentifier"),
+            new Field(typeof(ValueEditorInteger), "Sales Item Currency Amount", "salesItem_currencyAmount"),
+            new Field(typeof(ValueEditorInteger), "Sales Item Sky Platform Base Capacity", "salesItem_skyPlatformBaseCapacity"),
+            new Field(typeof(ValueEditorInteger), "Sales Item Sort Order", "salesItem_sortOrderASC"),
+            new Field(typeof(ValueEditorResearchIdentifier), "Sales Item Research", "salesItem_hiddenByResearchIdentifier"),
+            new Field(typeof(ValueEditorInteger), "Sales Currency Sky Platform Base Capacity", "salesCurrency_skyPlatformBaseCapacity"),
+            new Field(typeof(ValueEditorInteger), "Sales Currency Sort Order", "salesCurrency_sortOrderASC"),
+            new Field(typeof(ValueEditorResearchIdentifier), "Sales Currency Research", "salesCurrency_hiddenByResearchIdentifier"),
+            new Field(typeof(ValueEditorInteger), "Science Pack Research Frame Sorting Order", "sciencePack_researchFrameSortingOrder"),
+            new Field(typeof(ValueEditorColor), "Science Pack Color", "sciencePack_color"),
+            new Field(typeof(ValueEditorInteger), "Railminer Slot Length", "railminer_slotLength"),
+            new Field(typeof(ValueEditorInteger), "Railminer Speed (Slots Per Tick)", "railminer_speedInSlotsPerTick"),
+            new Field(typeof(ValueEditorInteger), "Railminer Minecart Speed (Slots Per Tick)", "railminer_minecartSpeedInSlotsPerTick"),
+            new Field(typeof(ValueEditorStringList), "Railminer Terrain Target List", "railMiner_terrainTargetList_str"),
+            new Field(typeof(ValueEditorBoolean), "Is Minecart Item", "isMinecartItem"),
+            //new Field(typeof(ValueEditor), "trainVehicle_templateIdentifier", "trainVehicle_templateIdentifier"),
+            //new Field(typeof(ValueEditorALOTIdentifier), "Assembly Line Object", "alStarter_alotIdentifier"),
+            new Field(typeof(ValueEditorItemIdentifier), "Assembly Line Sell Item", "alStarter_sellItemTemplateIdentifier"),
+            new Field(typeof(ValueEditorInteger), "Warehouse Stack Size", "warehouse_stackSize"),
+            new Field(typeof(ValueEditorItemIdentifier), "Rubble Recycling Result Item", "rubble_recyclingResultIdentifier"),
+            //new Field(typeof(ValueEditorAutoProducerActions), "autoProducerRecipes", "autoProducerRecipes"),
+        ];
 
         public static readonly Field[] recipe = [
             new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),

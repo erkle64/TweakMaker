@@ -60,6 +60,7 @@ namespace TweakMaker
             columnHeaderValues = new OLVColumn();
             panelOuter = new Panel();
             contextMenuTweak = new ContextMenuStrip(components);
+            addToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
             menuStripMain.SuspendLayout();
@@ -85,7 +86,7 @@ namespace TweakMaker
             // 
             // menuStripMain
             // 
-            menuStripMain.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, changeToolStripMenuItem });
+            menuStripMain.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, changeToolStripMenuItem, addToolStripMenuItem });
             menuStripMain.Location = new Point(0, 0);
             menuStripMain.Name = "menuStripMain";
             menuStripMain.Size = new Size(688, 24);
@@ -154,39 +155,41 @@ namespace TweakMaker
             // itemToolStripMenuItem
             // 
             itemToolStripMenuItem.Name = "itemToolStripMenuItem";
-            itemToolStripMenuItem.Size = new Size(121, 22);
+            itemToolStripMenuItem.Size = new Size(180, 22);
             itemToolStripMenuItem.Text = "Item";
             itemToolStripMenuItem.Click += itemToolStripMenuItem_Click;
             // 
             // recipeToolStripMenuItem
             // 
             recipeToolStripMenuItem.Name = "recipeToolStripMenuItem";
-            recipeToolStripMenuItem.Size = new Size(121, 22);
+            recipeToolStripMenuItem.Size = new Size(180, 22);
             recipeToolStripMenuItem.Text = "Recipe";
             recipeToolStripMenuItem.Click += recipeToolStripMenuItem_Click;
             // 
             // researchToolStripMenuItem
             // 
             researchToolStripMenuItem.Name = "researchToolStripMenuItem";
-            researchToolStripMenuItem.Size = new Size(121, 22);
+            researchToolStripMenuItem.Size = new Size(180, 22);
             researchToolStripMenuItem.Text = "Research";
             // 
             // fluidToolStripMenuItem
             // 
             fluidToolStripMenuItem.Name = "fluidToolStripMenuItem";
-            fluidToolStripMenuItem.Size = new Size(121, 22);
+            fluidToolStripMenuItem.Size = new Size(180, 22);
             fluidToolStripMenuItem.Text = "Fluid";
             // 
             // terrainToolStripMenuItem
             // 
+            terrainToolStripMenuItem.Enabled = false;
             terrainToolStripMenuItem.Name = "terrainToolStripMenuItem";
-            terrainToolStripMenuItem.Size = new Size(121, 22);
+            terrainToolStripMenuItem.Size = new Size(180, 22);
             terrainToolStripMenuItem.Text = "Terrain";
             // 
             // buildingToolStripMenuItem
             // 
+            buildingToolStripMenuItem.Enabled = false;
             buildingToolStripMenuItem.Name = "buildingToolStripMenuItem";
-            buildingToolStripMenuItem.Size = new Size(121, 22);
+            buildingToolStripMenuItem.Size = new Size(180, 22);
             buildingToolStripMenuItem.Text = "Building";
             // 
             // openFileDialog
@@ -309,6 +312,12 @@ namespace TweakMaker
             contextMenuTweak.Name = "contextMenuTweak";
             contextMenuTweak.Size = new Size(108, 48);
             // 
+            // addToolStripMenuItem
+            // 
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(41, 20);
+            addToolStripMenuItem.Text = "Add";
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -360,5 +369,6 @@ namespace TweakMaker
         private Panel panelOuter;
         private ToolStripMenuItem newToolStripMenuItem;
         private ContextMenuStrip contextMenuTweak;
+        private ToolStripMenuItem addToolStripMenuItem;
     }
 }

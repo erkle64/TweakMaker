@@ -30,7 +30,7 @@ namespace TweakMaker
             Debug.Assert(addRow != null);
             foreach (var field in fields)
             {
-                addRow.MakeGenericMethod(field.editor).Invoke(this, [field.label, field.identifier]);
+                addRow.MakeGenericMethod(field.editor).Invoke(this, [field.label, field.identifier, field.extraValues]);
             }
 
             tableTemplate.ResumeLayout();
@@ -53,13 +53,13 @@ namespace TweakMaker
             return template;
         }
 
-        private void AddRow<T>(string labelText, string key) where T : ValueEditor, new()
+        private void AddRow<T>(string labelText, string key, string[] extraValues) where T : ValueEditor, new()
         {
             var rowIndex = tableTemplate.RowCount;
             tableTemplate.RowCount++;
             tableTemplate.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             var editor = new T();
-            editor.Initialize(labelText, _template, key, _dump);
+            editor.Initialize(labelText, _template, key, _dump, extraValues);
             editor.InitializeComponents(tableTemplate, rowIndex);
             _valueEditors.Add(editor);
         }

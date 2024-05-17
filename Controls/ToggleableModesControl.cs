@@ -2,11 +2,11 @@
 
 namespace TweakMaker.Controls
 {
-    public partial class RecipeFluidControl : UserControl
+    public partial class ToggleableModesControl : UserControl
     {
         private DumpData _dump;
 
-        public RecipeFluidControl()
+        public ToggleableModesControl()
         {
             InitializeComponent();
 
@@ -22,9 +22,10 @@ namespace TweakMaker.Controls
             {
                 foreach (var entry in data)
                 {
-                    var name = dump.GetFluidName(entry.Key);
-                    var amount = entry.Value?["amount_str"]?.ToString() ?? "0";
-                    listView.Items.Add(new ListViewItem(new string[] { entry.Key, name, amount }));
+                    var name = entry.Value?["name"]?.ToString() ?? "";
+                    var icon_identifier = entry.Value?["icon_identifier"]?.ToString() ?? "";
+                    var isDefault = entry.Value?["isDefault"]?.Value<bool>() ?? false;
+                    listView.Items.Add(new ListViewItem(new string[] { entry.Key, name, icon_identifier, isDefault.ToString() }));
                 }
             }
         }
@@ -37,11 +38,15 @@ namespace TweakMaker.Controls
             {
                 var identifier = item.SubItems[0].Text;
 
-                var amount = item.SubItems[2].Text;
+                var name = item.SubItems[1].Text;
+                var icon_identifier = item.SubItems[2].Text;
+                var isDefault = item.SubItems[3].Text == "True";
 
                 var entry = new JObject
                 {
-                    { "amount_str", amount }
+                    { "name", name },
+                    { "icon_identifier", icon_identifier },
+                    { "isDefault", isDefault }
                 };
                 data.Add(identifier, entry);
             }
@@ -56,9 +61,8 @@ namespace TweakMaker.Controls
                 switch (e.SubItem)
                 {
                     case 0:
-                    case 1:
                         {
-                            var dialog = new DialogSelectTemplate("Select Fluid", _dump.fluids.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            var dialog = new DialogSelectTemplate("Select Building", _dump.buildings.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
                                 var identifier = dialog.SelectedIdentifier;
@@ -73,7 +77,7 @@ namespace TweakMaker.Controls
                                             {
                                                 using (new CenterWinDialog(form))
                                                 {
-                                                    MessageBox.Show(this, "Fluid already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                    MessageBox.Show(this, "Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                                 }
                                             }
                                             return;
@@ -81,42 +85,36 @@ namespace TweakMaker.Controls
                                     }
 
                                     listView.Items[e.Item.Index].SubItems[0].Text = identifier;
-                                    listView.Items[e.Item.Index].SubItems[1].Text = _dump.GetFluidName(identifier);
                                 }
                             }
                             dialog.Dispose();
                         }
                         break;
 
-                    case 2:
-                        listView.StartEditing(numericUpDownAmount, e.Item, e.SubItem);
+                    case 1:
+                        listView.StartEditing(textBox, e.Item, e.SubItem);
                         break;
-                }
-            }
-        }
 
-        private void listView_SubItemEndEditing(object sender, ListViewEx.SubItemEndEditingEventArgs e)
-        {
-            if (!e.Cancel && e.SubItem == 2)
-            {
-                try
-                {
-                    var amount = Convert.ToSingle(e.DisplayText);
-                    e.DisplayText = $"{amount:0.##}";
-                }
-                catch (Exception)
-                {
-                    if (e.Item != null)
-                    {
-                        e.DisplayText = listView.Items[e.Item.Index].SubItems[2].Text;
-                    }
+                    case 2:
+                        {
+                            var dialog = new DialogSelectIcon(_dump.icons, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            if (dialog.ShowDialog(this) == DialogResult.OK)
+                            {
+                                listView.Items[e.Item.Index].SubItems[2].Text = dialog.SelectedIconName;
+                            }
+                        }
+                        break;
+
+                    case 3:
+                        listView.Items[e.Item.Index].SubItems[3].Text = listView.Items[e.Item.Index].SubItems[3].Text == "True" ? "False" : "True";
+                        break;
                 }
             }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Fluid", _dump.fluids.Values, "");
+            var dialog = new DialogSelectTemplate("Select Building", _dump.buildings.Values, "");
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var identifier = dialog.SelectedIdentifier;
@@ -131,14 +129,14 @@ namespace TweakMaker.Controls
                             {
                                 using (new CenterWinDialog(form))
                                 {
-                                    MessageBox.Show(this, "Fluid already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show(this, "Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             }
                             return;
                         }
                     }
 
-                    listView.Items.Add(new ListViewItem(new string[] { identifier, _dump.GetFluidName(identifier), "1" }));
+                    listView.Items.Add(new ListViewItem(new string[] { identifier, "unnamed", "", "false" }));
                 }
             }
             dialog.Dispose();

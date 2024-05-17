@@ -112,7 +112,7 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.buildings[json["identifier"]?.ToString() ?? ""] = json;
+                    _dump.buildings[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
@@ -136,14 +136,39 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier") && !(json["skipForRunningIdxGeneration"]?.Value<bool>() ?? false))
                 {
-                    _dump.items[json["identifier"]?.ToString() ?? ""] = json;
+                    _dump.items[json["identifier"]!.ToString()] = json;
 
                     if ((json["flags"]?.ToString() ?? "").Contains("BUILDABLE_OBJECT"))
                     {
-                        var bot = json["buildableObjectIdentifer"]?.ToString() ?? "";
-                        if (!string.IsNullOrEmpty(bot) && _dump.buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
                         {
-                            botObject.Add("name", json["name"]);
+                            var bot = json["buildableObjectIdentifer"]?.ToString() ?? "";
+                            if (!string.IsNullOrEmpty(bot) && _dump.buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
+                            {
+                                if (!botObject.ContainsKey("name")) botObject.Add("name", json["name"]);
+                            }
+                        }
+
+                        if (json["toggleableModes"] is JObject modes)
+                        {
+                            foreach (var mode in modes)
+                            {
+                                if (mode.Value is JObject modeObject && modeObject.TryGetValue("name", out var nameToken) && nameToken is JValue nameValue)
+                                {
+                                    var modeName = nameValue.ToString();
+                                    var bot = mode.Key;
+                                    if (!string.IsNullOrEmpty(bot) && _dump.buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
+                                    {
+                                        if (!botObject.ContainsKey("name"))
+                                        {
+                                            botObject.Add("name", $"{json["name"]?.ToString()} ({modeName})");
+                                        }
+                                        else
+                                        {
+                                            botObject["name"] = $"{json["name"]?.ToString()} ({modeName})";
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -169,7 +194,7 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.fluids[json["identifier"]?.ToString() ?? ""] = json;
+                    _dump.fluids[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
@@ -191,9 +216,33 @@ namespace TweakMaker
                 if (cancellationToken.IsCancellationRequested) return;
 
                 var json = JObject.Parse(File.ReadAllText(filePath));
-                if (json.ContainsKey("identifier") && !(json["skipForRunningIdxGeneration"]?.Value<bool>() ?? false))
+                if (json.ContainsKey("identifier"))
                 {
-                    _dump.recipes[json["identifier"]?.ToString() ?? ""] = json;
+                    _dump.recipes[json["identifier"]!.ToString()] = json;
+                }
+
+                progressInfo.step++;
+                progress.Report(progressInfo);
+            }
+
+            _dump.researches.Clear();
+            var researchFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Research"));
+            progressInfo = new FormProgress.ProgressInfo
+            {
+                label = "Loading researches...",
+                step = 0,
+                maximum = researchFilePaths.Length,
+                done = false
+            };
+            progress.Report(progressInfo);
+            foreach (var filePath in researchFilePaths)
+            {
+                if (cancellationToken.IsCancellationRequested) return;
+
+                var json = JObject.Parse(File.ReadAllText(filePath));
+                if (json.ContainsKey("identifier"))
+                {
+                    _dump.researches[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
@@ -373,6 +422,22 @@ namespace TweakMaker
             }
         }
 
+        private void ChangeItem(string identifier)
+        {
+            var originalTemplate = (JObject)_dump.items[identifier].DeepClone();
+            if (TryGetTweak(out var tweakTemplate, "changes", "items", identifier))
+            {
+                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Replace,
+                    MergeNullValueHandling = MergeNullValueHandling.Ignore,
+                    PropertyNameComparison = StringComparison.InvariantCulture
+                });
+            }
+
+            DoChange(identifier, originalTemplate, "items", Templates.item);
+        }
+
         private void ChangeRecipe(string identifier)
         {
             var originalTemplate = (JObject)_dump.recipes[identifier].DeepClone();
@@ -386,12 +451,18 @@ namespace TweakMaker
                 });
             }
 
-            var dialogChangeRecipe = new DialogEditTemplate(originalTemplate, _dump, Templates.recipe);
-            if (dialogChangeRecipe.ShowDialog(this) == DialogResult.OK)
-            {
-                var newTemplate = dialogChangeRecipe.BuildTemplate();
+            DoChange(identifier, originalTemplate, "recipes", Templates.recipe);
+        }
 
-                if (TryGetTweak(out var currentTemplate, "changes", "recipes", identifier))
+        private void DoChange(string identifier, JObject originalTemplate, string category, Templates.Field[] fields)
+        {
+            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _dump, fields);
+            if (dialogEditTemplate.ShowDialog(this) == DialogResult.OK)
+            {
+                var newTemplate = dialogEditTemplate.BuildTemplate();
+                if (newTemplate.Count == 0) return;
+
+                if (TryGetTweak(out var currentTemplate, "changes", category, identifier))
                 {
                     currentTemplate.Merge(newTemplate, new JsonMergeSettings
                     {
@@ -399,11 +470,11 @@ namespace TweakMaker
                         MergeNullValueHandling = MergeNullValueHandling.Ignore,
                         PropertyNameComparison = StringComparison.InvariantCulture
                     });
-                    SetTweak(currentTemplate, "changes", "recipes", identifier);
+                    SetTweak(currentTemplate, "changes", category, identifier);
                 }
                 else
                 {
-                    SetTweak(newTemplate, "changes", "recipes", identifier);
+                    SetTweak(newTemplate, "changes", category, identifier);
                 }
 
                 _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
@@ -413,7 +484,6 @@ namespace TweakMaker
 
                 SetTweakChanged();
             }
-            dialogChangeRecipe.Dispose();
         }
 
         private void SetTweakChanged()
@@ -533,18 +603,18 @@ namespace TweakMaker
 
         private void itemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate(_dump.items.Values, string.Empty);
-            if (dialog.ShowDialog(this) == DialogResult.OK)
+            var dialogSelectTemplate = new DialogSelectTemplate("Select Item", _dump.items.Values, string.Empty);
+            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
             {
-                var form = new FormChangeItem(_dump.items[dialog.SelectedIdentifier], _dump);
-                form.Show(this);
+                var identifier = dialogSelectTemplate.SelectedIdentifier;
+                ChangeItem(identifier);
             }
-            dialog.Dispose();
+            dialogSelectTemplate.Dispose();
         }
 
         private void recipeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialogSelectTemplate = new DialogSelectTemplate(_dump.recipes.Values, string.Empty);
+            var dialogSelectTemplate = new DialogSelectTemplate("Select Recipe", _dump.recipes.Values, string.Empty);
             if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
             {
                 var identifier = dialogSelectTemplate.SelectedIdentifier;
@@ -575,12 +645,25 @@ namespace TweakMaker
                 tweakEntry = tweakEntry.Parent;
             }
 
-            if (tweakEntry.Parent?.Key == "recipes")
+            switch (tweakEntry.Parent?.Key)
             {
-                if (tweakEntry.Parent?.Parent?.Key == "changes")
-                {
-                    ChangeRecipe(tweakEntry.Key);
-                }
+                case "items":
+                    switch (tweakEntry.Parent?.Parent?.Key)
+                    {
+                        case "changes":
+                            ChangeItem(tweakEntry.Key);
+                            break;
+                    }
+                    break;
+
+                case "recipes":
+                    switch (tweakEntry.Parent?.Parent?.Key)
+                    {
+                        case "changes":
+                            ChangeRecipe(tweakEntry.Key);
+                            break;
+                    }
+                    break;
             }
         }
 
