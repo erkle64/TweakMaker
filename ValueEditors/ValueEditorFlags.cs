@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace TweakMaker.ValueEditors
 {
@@ -24,7 +26,11 @@ namespace TweakMaker.ValueEditors
             _checkedListBox.TabIndex = rowIndex + 1;
             _checkedListBox.Items.Clear();
             _checkedListBox.Items.AddRange(_extraValues);
-            _checkedListBox.MinimumSize = new Size(0, 100);
+
+            _checkedListBox.IntegralHeight = false;
+            //_checkedListBox.MinimumSize = _checkedListBox.MaximumSize = new Size(0, optionsHeight);
+            _checkedListBox.ClientSize = new Size(_checkedListBox.ClientSize.Width, _checkedListBox.GetItemRectangle(0).Height * _checkedListBox.Items.Count);
+
             foreach (var value in GetOriginalValue<string>()?.Split(',').Select(x => x.Trim()).ToArray() ?? [])
             {
                 var index = _checkedListBox.Items.IndexOf(value);

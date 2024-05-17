@@ -60,7 +60,7 @@ namespace TweakMaker
             new Field(typeof(ValueEditorInteger), "Mining Time Reduction In Sec", "miningTimeReductionInSec"),
             new Field(typeof(ValueEditorFloat), "Mining Range", "miningRange"),
             new Field(typeof(ValueEditorInteger), "Explosion Radius", "explosionRadius"),
-            new Field(typeof(ValueEditorFloat), "Burnable Fuel Value (KJ)", "burnable_fuelValueKJ_str"),
+            new Field(typeof(ValueEditorFloatString), "Burnable Fuel Value (KJ)", "burnable_fuelValueKJ_str"),
             new Field(typeof(ValueEditorItemIdentifier), "Burnable Residual Item", "burnable_residualItemTemplate_str"),
             new Field(typeof(ValueEditorInteger), "Burnable Residual Item Count", "burnable_residualItemTemplate_count"),
             new Field(typeof(ValueEditorItemIdentifier), "Sales Item Currency Item", "salesItem_currencyIdentifier"),
@@ -86,6 +86,20 @@ namespace TweakMaker
             //new Field(typeof(ValueEditorAutoProducerActions), "autoProducerRecipes", "autoProducerRecipes"),
         ];
 
+        public static readonly Field[] element = [
+            new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),
+            new Field(typeof(ValueEditorString), "Name", "name"),
+            new Field(typeof(ValueEditorIconIdentifier), "Icon Identifier", "icon_identifier"),
+            new Field(typeof(ValueEditorFlags), "Flags", "flags", "FUEL"),
+            new Field(typeof(ValueEditorColor), "Pipe Content Color", "pipeContentColor"),
+            new Field(typeof(ValueEditorInteger), "Pipe Content Type", "pipeContentType"),
+            new Field(typeof(ValueEditorFloatString), "Fuel Value (KJ/L)", "fuel_fuelValueKJPerL_str"),
+            new Field(typeof(ValueEditorElementIdentifier), "Fuel Residual Fluid", "fuel_residualTemplate_identifier"),
+            new Field(typeof(ValueEditorFloat), "Fuel Residual Amount/L", "fuel_residualAmountPerL"),
+            new Field(typeof(ValueEditorFlags), "Fuel Flags", "fuel_flags", "BURNABLE", "TURBINE"),
+            new Field(typeof(ValueEditorFloat), "Fuel Minimum Viable Volume", "fuel_minViableVolumeL"),
+        ];
+
         public static readonly Field[] recipe = [
             new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),
             new Field(typeof(ValueEditorString), "Name", "name"),
@@ -106,6 +120,46 @@ namespace TweakMaker
             new Field(typeof(ValueEditorStringList), "tags", "tags"),
             new Field(typeof(ValueEditorBoolean), "Force Show Outputs In Tooltips", "forceShowOutputsAtTooltips"),
             new Field(typeof(ValueEditorStringMultiline), "Extra Info Tooltip Text", "extraInfoTooltipText"),
+        ];
+
+        public static readonly Field[] research = [
+            new Field(typeof(ValueEditorString), "Mod Identifier", "modIdentifier"),
+            new Field(typeof(ValueEditorString), "Name", "name"),
+            new Field(typeof(ValueEditorIconIdentifier), "Icon Identifier", "icon_identifier"),
+            new Field(typeof(ValueEditorBoolean), "Include In Build", "includeInBuild"),
+            new Field(typeof(ValueEditorBoolean), "Include In Demo", "includeInDemo"),
+            new Field(typeof(ValueEditorFlags), "Flags", "flags",
+                "MAP_SCANNER_ORE",
+                "MAP_SCANNER_RESERVOIR",
+                "INVENTORY_SIZE",
+                "ENDLESS_RESEARCH",
+                "MINING_DRILL_SPEED",
+                "CHARACTER_CRAFTING_SPEED",
+                "UNLOCKS_JETPACK",
+                "MINING_HARDNESS",
+                "HIDE_IN_NON_DEMO_BUILD",
+                "JETPACK_SPEED",
+                "MANUAL_ENDLESS_RESEARCH"),
+            new Field(typeof(ValueEditorBoolean), "Is Internal", "isInternal"),
+            new Field(typeof(ValueEditorString), "Internal Research Unlock Description", "internalResearchUnlockDescription"),
+            new Field(typeof(ValueEditorResearchIdentifier), "Manual Endless Research", "manualEndlessResearchTemplate_str"),
+            new Field(typeof(ValueEditorStringMultiline), "Description", "description"),
+            new Field(typeof(ValueEditorString), "Research Context", "researchContext"),
+            new Field(typeof(ValueEditorInteger), "Seconds Per Science Item", "secondsPerScienceItem"),
+            new Field(typeof(ValueEditorResearchInputs), "Inputs", "input_data"),
+            new Field(typeof(ValueEditorResearchIdentifierList), "Research Dependencies", "list_researchDependencies_str"),
+            new Field(typeof(ValueEditorItemIdentifierList), "Crafting Unlocks", "list_craftingUnlocks_str"),
+            new Field(typeof(ValueEditorBlastFurnaceModeIdentifierList), "Blast Furnace Modes", "list_blastFurnaceModes_str"),
+            new Field(typeof(ValueEditorAssemblyLineObjectIdentifierList), "Assembly Line Objects", "list_alots_str"),
+            new Field(typeof(ValueEditorTerrainIdentifierList), "Ore Scanner Unlocks", "list_oreScannerUnlocks_str"),
+            new Field(typeof(ValueEditorTerrainIdentifier), "Map Scanner Ore", "mapScanner_ore_identifier"),
+            new Field(typeof(ValueEditorReservoirIdentifier), "Map Scanner Reservoir", "mapScanner_reservoir_identifier"),
+            new Field(typeof(ValueEditorInteger), "Additional Inventory Slots", "inventorySize_additionalInventorySlots"),
+            new Field(typeof(ValueEditorInteger), "Amount Of Manual Endless Researches", "endlessResearch_amountOfManualEndlessResearches"),
+            new Field(typeof(ValueEditorFloatString), "Character Crafting Speed Increase", "characterCraftingSpeed_additionalDecrementPercentage_str"),
+            new Field(typeof(ValueEditorFloatString), "Mining Time Multiplier", "miningDrillSpeed_miningTimeMultiplier_str"),
+            new Field(typeof(ValueEditorInteger), "Mining Hardness Level", "miningHardness_unlockedLevel"),
+            new Field(typeof(ValueEditorFloatString), "Jetpack Speed Increase", "jetpackSpeed_speedIncreasmentPercent_str")
         ];
     }
 }

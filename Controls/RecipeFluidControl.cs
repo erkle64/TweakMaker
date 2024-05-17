@@ -22,7 +22,7 @@ namespace TweakMaker.Controls
             {
                 foreach (var entry in data)
                 {
-                    var name = dump.GetFluidName(entry.Key);
+                    var name = dump.GetElementName(entry.Key);
                     var amount = entry.Value?["amount_str"]?.ToString() ?? "0";
                     listView.Items.Add(new ListViewItem(new string[] { entry.Key, name, amount }));
                 }
@@ -58,7 +58,7 @@ namespace TweakMaker.Controls
                     case 0:
                     case 1:
                         {
-                            var dialog = new DialogSelectTemplate("Select Fluid", _dump.fluids.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            var dialog = new DialogSelectTemplate("Select Fluid", _dump.elements.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
                                 var identifier = dialog.SelectedIdentifier;
@@ -81,7 +81,7 @@ namespace TweakMaker.Controls
                                     }
 
                                     listView.Items[e.Item.Index].SubItems[0].Text = identifier;
-                                    listView.Items[e.Item.Index].SubItems[1].Text = _dump.GetFluidName(identifier);
+                                    listView.Items[e.Item.Index].SubItems[1].Text = _dump.GetElementName(identifier);
                                 }
                             }
                             dialog.Dispose();
@@ -116,7 +116,7 @@ namespace TweakMaker.Controls
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Fluid", _dump.fluids.Values, "");
+            var dialog = new DialogSelectTemplate("Select Fluid", _dump.elements.Values, "");
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var identifier = dialog.SelectedIdentifier;
@@ -138,7 +138,7 @@ namespace TweakMaker.Controls
                         }
                     }
 
-                    listView.Items.Add(new ListViewItem(new string[] { identifier, _dump.GetFluidName(identifier), "1" }));
+                    listView.Items.Add(new ListViewItem(new string[] { identifier, _dump.GetElementName(identifier), "1" }));
                 }
             }
             dialog.Dispose();

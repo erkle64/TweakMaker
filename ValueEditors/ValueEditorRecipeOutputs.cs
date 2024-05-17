@@ -9,7 +9,7 @@ namespace TweakMaker.ValueEditors
 
         public override JToken? GetNewToken()
         {
-            return _recipeItemControl?.BuildData();
+            return _recipeItemControl?.BuildData(true);
         }
 
         public override void InitializeComponents(TableLayoutPanel table, int rowIndex)

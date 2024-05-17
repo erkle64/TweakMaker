@@ -38,7 +38,7 @@ namespace TweakMaker.Controls
             if (!showPercentage) columnHeaderPercentage.Width = 0;
         }
 
-        public JObject BuildData()
+        public JObject BuildData(bool includePercentage)
         {
             var data = new JObject();
 
@@ -50,16 +50,27 @@ namespace TweakMaker.Controls
                 try { amount = Convert.ToInt32(item.SubItems[2].Text); }
                 catch { amount = 0; }
 
-                int percentage;
-                try { percentage = Convert.ToInt32(item.SubItems[3].Text); }
-                catch { percentage = 0; }
-
-                var entry = new JObject
+                if (includePercentage)
                 {
-                    { "amount", amount },
-                    { "percentage_str", $"{percentage/100.0f:0.##}" }
-                };
-                data.Add(identifier, entry);
+                    int percentage;
+                    try { percentage = Convert.ToInt32(item.SubItems[3].Text); }
+                    catch { percentage = 0; }
+
+                    var entry = new JObject
+                    {
+                        { "amount", amount },
+                        { "percentage_str", $"{percentage/100.0f:0.##}" }
+                    };
+                    data.Add(identifier, entry);
+                }
+                else
+                {
+                    var entry = new JObject
+                    {
+                        { "amount", amount }
+                    };
+                    data.Add(identifier, entry);
+                }
             }
 
             return data;

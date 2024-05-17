@@ -43,11 +43,12 @@ namespace TweakMaker
             exitToolStripMenuItem = new ToolStripMenuItem();
             changeToolStripMenuItem = new ToolStripMenuItem();
             itemToolStripMenuItem = new ToolStripMenuItem();
+            fluidToolStripMenuItem = new ToolStripMenuItem();
             recipeToolStripMenuItem = new ToolStripMenuItem();
             researchToolStripMenuItem = new ToolStripMenuItem();
-            fluidToolStripMenuItem = new ToolStripMenuItem();
             terrainToolStripMenuItem = new ToolStripMenuItem();
             buildingToolStripMenuItem = new ToolStripMenuItem();
+            addToolStripMenuItem = new ToolStripMenuItem();
             openFileDialog = new OpenFileDialog();
             saveAsFileDialog = new SaveFileDialog();
             panelFoundryPath = new Panel();
@@ -60,7 +61,6 @@ namespace TweakMaker
             columnHeaderValues = new OLVColumn();
             panelOuter = new Panel();
             contextMenuTweak = new ContextMenuStrip(components);
-            addToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
             menuStripMain.SuspendLayout();
@@ -147,7 +147,7 @@ namespace TweakMaker
             // 
             // changeToolStripMenuItem
             // 
-            changeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { itemToolStripMenuItem, recipeToolStripMenuItem, researchToolStripMenuItem, fluidToolStripMenuItem, terrainToolStripMenuItem, buildingToolStripMenuItem });
+            changeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { itemToolStripMenuItem, fluidToolStripMenuItem, recipeToolStripMenuItem, researchToolStripMenuItem, terrainToolStripMenuItem, buildingToolStripMenuItem });
             changeToolStripMenuItem.Name = "changeToolStripMenuItem";
             changeToolStripMenuItem.Size = new Size(60, 20);
             changeToolStripMenuItem.Text = "Change";
@@ -158,6 +158,13 @@ namespace TweakMaker
             itemToolStripMenuItem.Size = new Size(180, 22);
             itemToolStripMenuItem.Text = "Item";
             itemToolStripMenuItem.Click += itemToolStripMenuItem_Click;
+            // 
+            // fluidToolStripMenuItem
+            // 
+            fluidToolStripMenuItem.Name = "fluidToolStripMenuItem";
+            fluidToolStripMenuItem.Size = new Size(180, 22);
+            fluidToolStripMenuItem.Text = "Element (Fluid)";
+            fluidToolStripMenuItem.Click += elementToolStripMenuItem_Click;
             // 
             // recipeToolStripMenuItem
             // 
@@ -171,12 +178,7 @@ namespace TweakMaker
             researchToolStripMenuItem.Name = "researchToolStripMenuItem";
             researchToolStripMenuItem.Size = new Size(180, 22);
             researchToolStripMenuItem.Text = "Research";
-            // 
-            // fluidToolStripMenuItem
-            // 
-            fluidToolStripMenuItem.Name = "fluidToolStripMenuItem";
-            fluidToolStripMenuItem.Size = new Size(180, 22);
-            fluidToolStripMenuItem.Text = "Fluid";
+            researchToolStripMenuItem.Click += researchToolStripMenuItem_Click;
             // 
             // terrainToolStripMenuItem
             // 
@@ -191,6 +193,12 @@ namespace TweakMaker
             buildingToolStripMenuItem.Name = "buildingToolStripMenuItem";
             buildingToolStripMenuItem.Size = new Size(180, 22);
             buildingToolStripMenuItem.Text = "Building";
+            // 
+            // addToolStripMenuItem
+            // 
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(41, 20);
+            addToolStripMenuItem.Text = "Add";
             // 
             // openFileDialog
             // 
@@ -311,12 +319,6 @@ namespace TweakMaker
             contextMenuTweak.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, deleteToolStripMenuItem });
             contextMenuTweak.Name = "contextMenuTweak";
             contextMenuTweak.Size = new Size(108, 48);
-            // 
-            // addToolStripMenuItem
-            // 
-            addToolStripMenuItem.Name = "addToolStripMenuItem";
-            addToolStripMenuItem.Size = new Size(41, 20);
-            addToolStripMenuItem.Text = "Add";
             // 
             // FormMain
             // 

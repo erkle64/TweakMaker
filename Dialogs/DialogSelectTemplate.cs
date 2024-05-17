@@ -18,7 +18,7 @@ namespace TweakMaker
             _defaultSelection = defaultSelection;
             listBoxSelectTemplate.Items.Clear();
             listBoxSelectTemplate.Items.AddRange(_templates.Where(json => json.ContainsKey("name")).Select(json => new TemplateData(json)).ToArray());
-            listBoxSelectTemplate.SelectedIndex = 0;
+            if (templates.Any()) listBoxSelectTemplate.SelectedIndex = 0;
         }
 
         private void DialogSelectTemplate_Shown(object sender, EventArgs e)
@@ -34,6 +34,14 @@ namespace TweakMaker
             get
             {
                 return (listBoxSelectTemplate.SelectedItem as TemplateData)?.identifier ?? "";
+            }
+        }
+
+        public TemplateData? SelectedTemplate
+        {
+            get
+            {
+                return listBoxSelectTemplate.SelectedItem as TemplateData;
             }
         }
 
