@@ -44,7 +44,7 @@ namespace TweakMaker
             {
                 var originalToken = editor.GetOriginalToken();
                 var newToken = editor.GetNewToken();
-                if (originalToken != null && newToken != null && !JToken.DeepEquals(originalToken, newToken))
+                if (originalToken != null && newToken != null && originalToken.ToString() != newToken.ToString())
                 {
                     template[editor.Key] = newToken;
                 }
@@ -59,7 +59,7 @@ namespace TweakMaker
             tableTemplate.RowCount++;
             tableTemplate.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             var editor = new T();
-            editor.Initialize(labelText, _template, key, _dump, extraValues);
+            editor.Initialize(labelText, _template, key, _dump, extraValues, toolTips);
             editor.InitializeComponents(tableTemplate, rowIndex);
             _valueEditors.Add(editor);
         }

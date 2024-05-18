@@ -83,7 +83,7 @@ namespace TweakMaker
 
         private void buttonIconIdentifierBrowse_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectIcon(_dump.icons, textBoxIconIdentifier.Text);
+            var dialog = new DialogSelectIcon(_dump.Icons, textBoxIconIdentifier.Text);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxIconIdentifier.Text = dialog.SelectedIconName;
@@ -93,7 +93,7 @@ namespace TweakMaker
 
         private void buttonBuildableObjectIdentifier_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Building", _dump.buildings.Values, textBoxBuildableObjectIdentifier.Text);
+            var dialog = new DialogSelectTemplate("Select Building", _dump, "buildings", textBoxBuildableObjectIdentifier.Text);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxBuildableObjectIdentifier.Text = dialog.SelectedIdentifier;
@@ -103,7 +103,7 @@ namespace TweakMaker
 
         private void buttonDefaultPowerpoleItemTemplate_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Item", _dump.items.Values, textBoxDefaultPowerpoleItemTemplate.Text);
+            var dialog = new DialogSelectTemplate("Select Item", _dump, "items", textBoxDefaultPowerpoleItemTemplate.Text);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxDefaultPowerpoleItemTemplate.Text = dialog.SelectedIdentifier;
@@ -113,7 +113,7 @@ namespace TweakMaker
 
         private void buttonBurnableResidualItemTemplate_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Item", _dump.items.Values, textBoxBurnableResidualItemTemplate.Text);
+            var dialog = new DialogSelectTemplate("Select Item", _dump, "items", textBoxBurnableResidualItemTemplate.Text);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxBurnableResidualItemTemplate.Text = dialog.SelectedIdentifier;

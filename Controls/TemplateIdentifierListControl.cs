@@ -4,12 +4,14 @@ namespace TweakMaker.Controls
 {
     public partial class TemplateIdentifierListControl : UserControl
     {
-        private readonly Dictionary<string, JObject> _templates;
+        private readonly DumpData _dump;
+        private readonly string _dumpCategory;
 
-        public TemplateIdentifierListControl(Dictionary<string, JObject> templates)
+        public TemplateIdentifierListControl(DumpData dump, string dumpCategory)
         {
             InitializeComponent();
-            _templates = templates;
+            _dump = dump;
+            _dumpCategory = dumpCategory;
         }
 
         public void LoadData(JArray? data)
@@ -20,7 +22,7 @@ namespace TweakMaker.Controls
                 foreach (var entry in data)
                 {
                     var identifier = entry.ToString();
-                    listView.Items.Add(new ListViewItem([identifier, DumpData.GetTemplateName(_templates, identifier)]));
+                    listView.Items.Add(new ListViewItem([identifier, _dump.GetTemplateName(_dumpCategory, identifier)]));
                 }
             }
         }
@@ -39,7 +41,7 @@ namespace TweakMaker.Controls
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Template", _templates.Values, "");
+            var dialog = new DialogSelectTemplate("Select Template", _dump, _dumpCategory, "");
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var identifier = dialog.SelectedIdentifier;

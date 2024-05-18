@@ -62,7 +62,7 @@ namespace TweakMaker.Controls
                 {
                     case 0:
                         {
-                            var dialog = new DialogSelectTemplate("Select Building", _dump.buildings.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            var dialog = new DialogSelectTemplate("Select Building", _dump, "buildings", listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
                                 var identifier = dialog.SelectedIdentifier;
@@ -97,7 +97,7 @@ namespace TweakMaker.Controls
 
                     case 2:
                         {
-                            var dialog = new DialogSelectIcon(_dump.icons, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            var dialog = new DialogSelectIcon(_dump.Icons, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
                             if (dialog.ShowDialog(this) == DialogResult.OK)
                             {
                                 listView.Items[e.Item.Index].SubItems[2].Text = dialog.SelectedIconName;
@@ -114,7 +114,7 @@ namespace TweakMaker.Controls
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Building", _dump.buildings.Values, "");
+            var dialog = new DialogSelectTemplate("Select Building", _dump, "buildings", "");
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var identifier = dialog.SelectedIdentifier;

@@ -29,6 +29,7 @@ namespace TweakMaker
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableTemplate = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
             numericUpDown4 = new NumericUpDown();
@@ -36,6 +37,7 @@ namespace TweakMaker
             buttonCancel = new Button();
             buttonSave = new Button();
             panelScroll = new Panel();
+            toolTips = new ToolTip(components);
             tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown5).BeginInit();
@@ -148,6 +150,11 @@ namespace TweakMaker
             panelScroll.TabIndex = 3;
             panelScroll.Resize += panelScroll_Resize;
             // 
+            // toolTips
+            // 
+            toolTips.AutomaticDelay = 1500;
+            toolTips.IsBalloon = true;
+            // 
             // DialogEditTemplate
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -178,5 +185,6 @@ namespace TweakMaker
         private Button buttonCancel;
         private Button buttonSave;
         private Panel panelScroll;
+        private ToolTip toolTips;
     }
 }

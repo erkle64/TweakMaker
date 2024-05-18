@@ -5,20 +5,23 @@ namespace TweakMaker
 {
     public partial class DialogSelectTemplate : Form
     {
-        private readonly IEnumerable<JObject> _templates;
+        private readonly DumpData _dump;
+        private readonly string _dumpCategory;
         private readonly string _defaultSelection;
 
-        public DialogSelectTemplate(string title, IEnumerable<JObject> templates, string defaultSelection)
+        public DialogSelectTemplate(string title, DumpData dump, string dumpCategory, string defaultSelection)
         {
             InitializeComponent();
 
             Text = title;
 
-            _templates = templates;
+            _dump = dump;
+            _dumpCategory = dumpCategory;
             _defaultSelection = defaultSelection;
+            var names = _dump.Flatten(_dumpCategory);
             listBoxSelectTemplate.Items.Clear();
-            listBoxSelectTemplate.Items.AddRange(_templates.Where(json => json.ContainsKey("name")).Select(json => new TemplateData(json)).ToArray());
-            if (templates.Any()) listBoxSelectTemplate.SelectedIndex = 0;
+            listBoxSelectTemplate.Items.AddRange(names.Where(x => x.Value.ContainsKey("name")).Select(kv => new TemplateData(kv.Value)).ToArray());
+            if (!_dump.IsEmpty(_dumpCategory)) listBoxSelectTemplate.SelectedIndex = 0;
         }
 
         private void DialogSelectTemplate_Shown(object sender, EventArgs e)

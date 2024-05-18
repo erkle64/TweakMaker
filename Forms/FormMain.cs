@@ -2,15 +2,37 @@ using BrightIdeasSoftware;
 using Narod.SteamGameFinder;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using TweakMaker.Dialogs;
 
 namespace TweakMaker
 {
     public partial class FormMain : Form
     {
+        private const string dumpPathBuildings = @"tweakificator\Dumps\Buildings";
+        private const string dumpPathItems = @"tweakificator\Dumps\Items";
+        private const string dumpPathElements = @"tweakificator\Dumps\Elements";
+        private const string dumpPathRecipes = @"tweakificator\Dumps\Recipes";
+        private const string dumpPathResearch = @"tweakificator\Dumps\Research";
+        private const string dumpPathBlastFurnaceModes = @"tweakificator\Dumps\BlastFurnaceModes";
+        private const string dumpPathAssemblyLineObjects = @"tweakificator\Dumps\AssemblyLineObjects";
+        private const string dumpPathTerrainBlocks = @"tweakificator\Dumps\TerrainBlocks";
+        private const string dumpPathReservoirs = @"tweakificator\Dumps\Reservoirs";
+        private const string dumpPathIconsList = @"tweakificator\Dumps\Icons\__icons.txt";
+        private const string dumpPathIcons = @"tweakificator\Dumps\Icons";
+        private const string missingDumpText = @"Tweakificator dumps required.
+How to generate dump:
+1. Install Tweakificator v2.0.2+
+2. Run FOUNDRY to the title screen at least once
+3. Set the dumpTemplates value to true in Config\erkle64.Tweakificator.ini
+4. Run FOUNDRY to the title screen again
+5. Open TweakMaker again";
+
         private TweakEntryObject? _treeRoot = null;
         private JObject _jsonRoot;
 
-        private readonly DumpData _dump = new();
+        private readonly DumpData _dump;
+        private readonly DumpData _tweakAdditionsDump;
+        private readonly DumpData _tweakChangesDump;
         private readonly FormProgress _progressBox;
 
         private readonly string _baseTitle = string.Empty;
@@ -26,6 +48,10 @@ namespace TweakMaker
             InitializeComponent();
 
             _baseTitle = Text;
+
+            _dump = new();
+            _tweakAdditionsDump = new(_dump);
+            _tweakChangesDump = new(_tweakAdditionsDump);
 
             _progressBox = new FormProgress();
 
@@ -60,6 +86,7 @@ namespace TweakMaker
             BuildTreeView(_jsonRoot, _treeRoot);
             treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
             treeViewTweak.ExpandAll();
+            BuildTweakDump();
         }
 
         private void SetFoundryPath(string path)
@@ -68,6 +95,38 @@ namespace TweakMaker
 
             if (!string.IsNullOrEmpty(path))
             {
+                newToolStripMenuItem.Enabled = false;
+                openToolStripMenuItem.Enabled = false;
+                saveToolStripMenuItem.Enabled = false;
+                saveAsToolStripMenuItem.Enabled = false;
+                changeToolStripMenuItem.Enabled = false;
+                addToolStripMenuItem.Enabled = false;
+                treeViewTweak.Enabled = false;
+
+                if (!Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathBuildings))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathItems))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathRecipes))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathResearch))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathElements))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathReservoirs))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathBlastFurnaceModes))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathBuildings))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathTerrainBlocks))
+                    || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathIcons))
+                    || !File.Exists(Path.Combine(inputFoundryPath.Text, dumpPathIconsList)))
+                {
+                    MessageBox.Show(missingDumpText, "Missing Dumps!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                newToolStripMenuItem.Enabled = true;
+                openToolStripMenuItem.Enabled = true;
+                saveToolStripMenuItem.Enabled = true;
+                saveAsToolStripMenuItem.Enabled = true;
+                changeToolStripMenuItem.Enabled = true;
+                addToolStripMenuItem.Enabled = true;
+                treeViewTweak.Enabled = true;
+
                 menuStripMain.Enabled = false;
                 panelOuter.Enabled = false;
                 _progressBox.Show(this);
@@ -95,8 +154,8 @@ namespace TweakMaker
 
         private void LoadDumpData(CancellationToken cancellationToken, IProgress<FormProgress.ProgressInfo> progress)
         {
-            _dump.buildings.Clear();
-            var buildingFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Buildings"));
+            _dump.Buildings.Clear();
+            var buildingFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathBuildings));
             var progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading buildings...",
@@ -112,15 +171,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.buildings[json["identifier"]!.ToString()] = json;
+                    _dump.Buildings[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.items.Clear();
-            var itemFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Items"));
+            _dump.Items.Clear();
+            var itemFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathItems));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading items...",
@@ -136,13 +195,13 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier") && !(json["skipForRunningIdxGeneration"]?.Value<bool>() ?? false))
                 {
-                    _dump.items[json["identifier"]!.ToString()] = json;
+                    _dump.Items[json["identifier"]!.ToString()] = json;
 
                     if ((json["flags"]?.ToString() ?? "").Contains("BUILDABLE_OBJECT"))
                     {
                         {
                             var bot = json["buildableObjectIdentifer"]?.ToString() ?? "";
-                            if (!string.IsNullOrEmpty(bot) && _dump.buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
+                            if (!string.IsNullOrEmpty(bot) && _dump.Buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
                             {
                                 if (!botObject.ContainsKey("name")) botObject.Add("name", json["name"]);
                             }
@@ -156,7 +215,7 @@ namespace TweakMaker
                                 {
                                     var modeName = nameValue.ToString();
                                     var bot = mode.Key;
-                                    if (!string.IsNullOrEmpty(bot) && _dump.buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
+                                    if (!string.IsNullOrEmpty(bot) && _dump.Buildings.TryGetValue(bot, out JObject? value) && value is JObject botObject)
                                     {
                                         if (!botObject.ContainsKey("name"))
                                         {
@@ -177,8 +236,8 @@ namespace TweakMaker
                 progress.Report(progressInfo);
             }
 
-            _dump.elements.Clear();
-            var elementFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Elements"));
+            _dump.Elements.Clear();
+            var elementFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathElements));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading elements...",
@@ -194,15 +253,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.elements[json["identifier"]!.ToString()] = json;
+                    _dump.Elements[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.recipes.Clear();
-            var recipeFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Recipes"));
+            _dump.Recipes.Clear();
+            var recipeFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathRecipes));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading recipes...",
@@ -218,15 +277,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.recipes[json["identifier"]!.ToString()] = json;
+                    _dump.Recipes[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.researches.Clear();
-            var researchFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Research"));
+            _dump.Researches.Clear();
+            var researchFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathResearch));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading researches...",
@@ -242,15 +301,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.researches[json["identifier"]!.ToString()] = json;
+                    _dump.Researches[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.blastFurnaceModes.Clear();
-            var blastFurnaceModeFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\BlastFurnaceModes"));
+            _dump.BlastFurnaceModes.Clear();
+            var blastFurnaceModeFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathBlastFurnaceModes));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading blast furnace modes...",
@@ -266,15 +325,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.blastFurnaceModes[json["identifier"]!.ToString()] = json;
+                    _dump.BlastFurnaceModes[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.assemblyLineObjects.Clear();
-            var assemblyLineObjectFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\AssemblyLineObjects"));
+            _dump.AssemblyLineObjects.Clear();
+            var assemblyLineObjectFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathAssemblyLineObjects));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading assembly line objects...",
@@ -290,15 +349,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.assemblyLineObjects[json["identifier"]!.ToString()] = json;
+                    _dump.AssemblyLineObjects[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.terrainBlocks.Clear();
-            var terrainBlockFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\TerrainBlocks"));
+            _dump.TerrainBlocks.Clear();
+            var terrainBlockFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathTerrainBlocks));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading assembly line objects...",
@@ -314,15 +373,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.terrainBlocks[json["identifier"]!.ToString()] = json;
+                    _dump.TerrainBlocks[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.reservoirs.Clear();
-            var reservoirFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Reservoirs"));
+            _dump.Reservoirs.Clear();
+            var reservoirFilePaths = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathReservoirs));
             progressInfo = new FormProgress.ProgressInfo
             {
                 label = "Loading assembly line objects...",
@@ -338,15 +397,15 @@ namespace TweakMaker
                 var json = JObject.Parse(File.ReadAllText(filePath));
                 if (json.ContainsKey("identifier"))
                 {
-                    _dump.reservoirs[json["identifier"]!.ToString()] = json;
+                    _dump.Reservoirs[json["identifier"]!.ToString()] = json;
                 }
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
             }
 
-            _dump.icons.Clear();
-            var iconNames = File.ReadAllLines(Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Icons\\__icons.txt"))
+            _dump.Icons.Clear();
+            var iconNames = File.ReadAllLines(Path.Combine(inputFoundryPath.Text, dumpPathIconsList))
                 .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             progressInfo = new FormProgress.ProgressInfo
             {
@@ -361,7 +420,7 @@ namespace TweakMaker
                 if (cancellationToken.IsCancellationRequested) return;
 
                 Image? image = null;
-                var iconFile = Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Icons", $"{iconName}.png");
+                var iconFile = Path.Combine(inputFoundryPath.Text, dumpPathIcons, $"{iconName}.png");
                 if (File.Exists(iconFile))
                 {
                     image = Image.FromFile(iconFile);
@@ -370,7 +429,7 @@ namespace TweakMaker
                 {
                     foreach (var size in _iconSizes)
                     {
-                        iconFile = Path.Combine(inputFoundryPath.Text, @"tweakificator\\Dumps\\Icons", $"{iconName}_{size}.png");
+                        iconFile = Path.Combine(inputFoundryPath.Text, dumpPathIcons, $"{iconName}_{size}.png");
                         if (File.Exists(iconFile))
                         {
                             image = Image.FromFile(iconFile);
@@ -384,7 +443,7 @@ namespace TweakMaker
                     image = ImageTools.ResizeImage(image, 256, 256);
                 }
 
-                _dump.icons[iconName] = image;
+                _dump.Icons[iconName] = image;
 
                 progressInfo.step++;
                 progress.Report(progressInfo);
@@ -518,12 +577,72 @@ namespace TweakMaker
             }
         }
 
-        private void ChangeItem(string identifier)
+        private void RemoveTweak(params string[] keys)
         {
-            var originalTemplate = (JObject)_dump.items[identifier].DeepClone();
-            if (TryGetTweak(out var tweakTemplate, "changes", "items", identifier))
+            Debug.Assert(keys.Length > 0);
+            _jsonRoot ??= [];
+            var current = _jsonRoot;
+            for (int i = 0; i < keys.Length - 1; i++)
             {
-                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
+                string? key = keys[i];
+                if (!current.TryGetValue(key, out var next))
+                {
+                    next = new JObject();
+                    current[key] = next;
+                }
+                if (next is not JObject nextObject) throw new Exception("Invalid JTokenType");
+                current = nextObject;
+            }
+
+            var lastKey = keys[^1];
+            if (current.ContainsKey(lastKey))
+            {
+                current.Remove(lastKey);
+            }
+        }
+
+        private void BeginChangeTemplate(string title, string category)
+        {
+            using var dialogSelectTemplate = new DialogSelectTemplate(title, _tweakChangesDump, category, string.Empty);
+            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
+            {
+                var identifier = dialogSelectTemplate.SelectedIdentifier;
+                ChangeTemplate(category, identifier);
+            }
+        }
+
+        private void BeginAddTemplate(string title, string category)
+        {
+            using var dialogSelectTemplate = new DialogSelectTemplate(title, _dump, category, string.Empty);
+            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
+            {
+                var templateIdentifier = dialogSelectTemplate.SelectedIdentifier;
+                using var dialogChooseTemplateIdentifier = new DialogChooseTemplateIdentifier(_dump, category, "");
+                if (dialogChooseTemplateIdentifier.ShowDialog(this) == DialogResult.OK)
+                {
+                    var identifier = dialogChooseTemplateIdentifier.SelectedIdentifier;
+                    AddTemplate(category, identifier, string.Empty, templateIdentifier);
+                }
+            }
+        }
+
+        private void ChangeTemplate(string category, string identifier)
+        {
+            var originalTemplate = _tweakChangesDump.Flatten(category, identifier);
+            Debug.Assert(originalTemplate != null);
+            DoChange(identifier, originalTemplate, category);
+        }
+
+        private void AddTemplate(string category, string identifier, string previousIdentifier, string templateIdentifier)
+        {
+            var originalTemplate = _tweakChangesDump.Flatten(category, templateIdentifier);
+            Debug.Assert(originalTemplate != null);
+
+            var additionTemplate = _tweakAdditionsDump.Flatten(category, previousIdentifier);
+            if (additionTemplate != null)
+            {
+                originalTemplate = (JObject)originalTemplate.DeepClone();
+                originalTemplate.Merge(additionTemplate, new JsonMergeSettings
                 {
                     MergeArrayHandling = MergeArrayHandling.Replace,
                     MergeNullValueHandling = MergeNullValueHandling.Ignore,
@@ -531,60 +650,12 @@ namespace TweakMaker
                 });
             }
 
-            DoChange(identifier, originalTemplate, "items", Templates.item);
+            DoAddition(identifier, previousIdentifier, templateIdentifier, originalTemplate, category);
         }
 
-        private void ChangeElement(string identifier)
+        private void DoChange(string identifier, JObject originalTemplate, string category)
         {
-            var originalTemplate = (JObject)_dump.elements[identifier].DeepClone();
-            if (TryGetTweak(out var tweakTemplate, "changes", "elements", identifier))
-            {
-                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Replace,
-                    MergeNullValueHandling = MergeNullValueHandling.Ignore,
-                    PropertyNameComparison = StringComparison.InvariantCulture
-                });
-            }
-
-            DoChange(identifier, originalTemplate, "elements", Templates.element);
-        }
-
-        private void ChangeRecipe(string identifier)
-        {
-            var originalTemplate = (JObject)_dump.recipes[identifier].DeepClone();
-            if (TryGetTweak(out var tweakTemplate, "changes", "recipes", identifier))
-            {
-                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Replace,
-                    MergeNullValueHandling = MergeNullValueHandling.Ignore,
-                    PropertyNameComparison = StringComparison.InvariantCulture
-                });
-            }
-
-            DoChange(identifier, originalTemplate, "recipes", Templates.recipe);
-        }
-
-        private void ChangeResearch(string identifier)
-        {
-            var originalTemplate = (JObject)_dump.researches[identifier].DeepClone();
-            if (TryGetTweak(out var tweakTemplate, "changes", "research", identifier))
-            {
-                originalTemplate.Merge(tweakTemplate, new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Replace,
-                    MergeNullValueHandling = MergeNullValueHandling.Ignore,
-                    PropertyNameComparison = StringComparison.InvariantCulture
-                });
-            }
-
-            DoChange(identifier, originalTemplate, "research", Templates.research);
-        }
-
-        private void DoChange(string identifier, JObject originalTemplate, string category, Templates.Field[] fields)
-        {
-            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _dump, fields);
+            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _tweakChangesDump, Templates.Get(category));
             if (dialogEditTemplate.ShowDialog(this) == DialogResult.OK)
             {
                 var newTemplate = dialogEditTemplate.BuildTemplate();
@@ -609,8 +680,89 @@ namespace TweakMaker
                 BuildTreeView(_jsonRoot, _treeRoot);
                 treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
                 treeViewTweak.ExpandAll();
+                BuildTweakDump();
 
                 SetTweakChanged();
+            }
+        }
+
+        private void DoAddition(string identifier, string previousIdentifier, string templateIdentifier, JObject originalTemplate, string category)
+        {
+            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _dump, Templates.Get(category));
+            if (dialogEditTemplate.ShowDialog(this) == DialogResult.OK)
+            {
+                var newTemplate = dialogEditTemplate.BuildTemplate();
+
+                if (newTemplate.ContainsKey("__template"))
+                    newTemplate["__template"] = new JValue(templateIdentifier);
+                else
+                    newTemplate.Add("__template", new JValue(templateIdentifier));
+
+                if (TryGetTweak(out var currentTemplate, "additions", category, previousIdentifier))
+                {
+                    currentTemplate.Merge(newTemplate, new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Replace,
+                        MergeNullValueHandling = MergeNullValueHandling.Ignore,
+                        PropertyNameComparison = StringComparison.InvariantCulture
+                    });
+                    SetTweak(currentTemplate, "additions", category, identifier);
+                }
+                else
+                {
+                    SetTweak(newTemplate, "additions", category, identifier);
+                }
+
+                if (identifier != previousIdentifier)
+                {
+                    RemoveTweak("additions", category, previousIdentifier);
+                }
+
+                _treeRoot = new TweakEntryObject(null, "tweak", _jsonRoot);
+                BuildTreeView(_jsonRoot, _treeRoot);
+                treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
+                treeViewTweak.ExpandAll();
+                BuildTweakDump();
+
+                SetTweakChanged();
+            }
+        }
+
+        private void BuildTweakDump()
+        {
+            _tweakAdditionsDump.Clear();
+            _tweakChangesDump.Clear();
+
+            if (_jsonRoot is null) return;
+
+            if (_jsonRoot.TryGetValue("additions", out var additionsToken) && additionsToken is JObject additions)
+            {
+                foreach (var kv in additions)
+                {
+                    if (kv.Value is JObject categories)
+                    {
+                        var dumpTemplates = _tweakAdditionsDump.GetOrCreateTemplateMap(kv.Key);
+                        foreach (var kv2 in categories)
+                        {
+                            if (kv2.Value is JObject template) dumpTemplates.Add(kv2.Key, template);
+                        }
+                    }
+                }
+            }
+
+            if (_jsonRoot.TryGetValue("changes", out var changesToken) && changesToken is JObject changes)
+            {
+                foreach (var kv in changes)
+                {
+                    if (kv.Value is JObject categories)
+                    {
+                        var dumpTemplates = _tweakChangesDump.GetOrCreateTemplateMap(kv.Key);
+                        foreach (var kv2 in categories)
+                        {
+                            if (kv2.Value is JObject template) dumpTemplates.Add(kv2.Key, template);
+                        }
+                    }
+                }
             }
         }
 
@@ -683,6 +835,7 @@ namespace TweakMaker
             BuildTreeView(_jsonRoot, _treeRoot);
             treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
             treeViewTweak.ExpandAll();
+            BuildTweakDump();
 
             Text = _baseTitle;
             _isTweakChanged = false;
@@ -700,6 +853,7 @@ namespace TweakMaker
                 BuildTreeView(_jsonRoot, _treeRoot);
                 treeViewTweak.Roots = new TweakEntry[] { _treeRoot };
                 treeViewTweak.ExpandAll();
+                BuildTweakDump();
 
                 Text = $"{_baseTitle} - {Path.GetFileName(_currentTweakPath)}";
                 _isTweakChanged = false;
@@ -731,46 +885,42 @@ namespace TweakMaker
 
         private void itemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialogSelectTemplate = new DialogSelectTemplate("Select Item", _dump.items.Values, string.Empty);
-            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
-            {
-                var identifier = dialogSelectTemplate.SelectedIdentifier;
-                ChangeItem(identifier);
-            }
-            dialogSelectTemplate.Dispose();
+            BeginChangeTemplate("Select Item", "items");
         }
 
         private void elementToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialogSelectTemplate = new DialogSelectTemplate("Select Element", _dump.elements.Values, string.Empty);
-            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
-            {
-                var identifier = dialogSelectTemplate.SelectedIdentifier;
-                ChangeElement(identifier);
-            }
-            dialogSelectTemplate.Dispose();
+            BeginChangeTemplate("Select Element", "elements");
         }
 
         private void recipeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialogSelectTemplate = new DialogSelectTemplate("Select Recipe", _dump.recipes.Values, string.Empty);
-            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
-            {
-                var identifier = dialogSelectTemplate.SelectedIdentifier;
-                ChangeRecipe(identifier);
-            }
-            dialogSelectTemplate.Dispose();
+            BeginChangeTemplate("Select Recipe", "recipes");
         }
 
         private void researchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialogSelectTemplate = new DialogSelectTemplate("Select Research", _dump.researches.Values, string.Empty);
-            if (dialogSelectTemplate.ShowDialog(this) == DialogResult.OK)
-            {
-                var identifier = dialogSelectTemplate.SelectedIdentifier;
-                ChangeResearch(identifier);
-            }
-            dialogSelectTemplate.Dispose();
+            BeginChangeTemplate("Select Research", "research");
+        }
+
+        private void addItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginAddTemplate("Select Template Item", "items");
+        }
+
+        private void addFluidToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginAddTemplate("Select Template Element (Fluid)", "elements");
+        }
+
+        private void addRecipeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginAddTemplate("Select Template Recipe", "recipes");
+        }
+
+        private void addResearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginAddTemplate("Select Template Research", "research");
         }
 
         private void treeViewTweak_CellRightClick(object sender, CellRightClickEventArgs e)
@@ -780,6 +930,8 @@ namespace TweakMaker
 
             if (tweakEntry.Depth == 3 || tweakEntry.Depth == 4)
             {
+                if (tweakEntry.Depth == 4 && tweakEntry.Key == "__template") return;
+
                 contextMenuTweak.Tag = tweakEntry;
                 contextMenuTweak.Show(treeViewTweak, new Point(e.Location.X, e.Location.Y));
             }
@@ -798,19 +950,28 @@ namespace TweakMaker
             switch (tweakEntry.Parent?.Key)
             {
                 case "items":
-                    switch (tweakEntry.Parent?.Parent?.Key)
-                    {
-                        case "changes":
-                            ChangeItem(tweakEntry.Key);
-                            break;
-                    }
-                    break;
-
+                case "elements":
                 case "recipes":
+                case "research":
                     switch (tweakEntry.Parent?.Parent?.Key)
                     {
                         case "changes":
-                            ChangeRecipe(tweakEntry.Key);
+                            ChangeTemplate(tweakEntry.Parent!.Key, tweakEntry.Key);
+                            break;
+
+                        case "additions":
+                            {
+                                var templateIdentifier = (tweakEntry.Token as JObject)?["__template"]?.ToString();
+                                if (!string.IsNullOrEmpty(templateIdentifier))
+                                {
+                                    using var dialogChooseTemplateIdentifier = new DialogChooseTemplateIdentifier(_tweakChangesDump, "items", tweakEntry.Key);
+                                    if (dialogChooseTemplateIdentifier.ShowDialog(this) == DialogResult.OK)
+                                    {
+                                        var identifier = dialogChooseTemplateIdentifier.SelectedIdentifier;
+                                        AddTemplate(tweakEntry.Parent!.Key, identifier, tweakEntry.Key, templateIdentifier);
+                                    }
+                                }
+                            }
                             break;
                     }
                     break;
@@ -820,6 +981,8 @@ namespace TweakMaker
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (contextMenuTweak.Tag is not TweakEntry tweakEntry) return;
+
+            if (tweakEntry.Depth == 4 && tweakEntry.Key == "__template") return;
 
             using (new CenterWinDialog(this))
             {

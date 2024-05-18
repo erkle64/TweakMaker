@@ -38,8 +38,7 @@ namespace TweakMaker.ValueEditors
             _vector4Control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _vector4Control.Name = $"Vector4_{_labelText}";
             _vector4Control.TabIndex = rowIndex + 1;
-            var original = GetOriginalToken() as JObject;
-            if (original != null)
+            if (GetOriginalToken() is JObject original)
             {
                 _vector4Control.X = original["x"]?.Value<float>() ?? 0.0f;
                 _vector4Control.Y = original["y"]?.Value<float>() ?? 0.0f;

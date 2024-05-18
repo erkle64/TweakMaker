@@ -5,12 +5,13 @@ namespace TweakMaker
 {
     public partial class TemplateIdentifierControl : UserControl
     {
+        private readonly DumpData _dump;
+        private readonly string _dumpCategory;
+
         [Browsable(true)]
         [Category("Action")]
         [Description("Invoked when user changes text")]
         public event EventHandler? ValueChanged;
-
-        private readonly IEnumerable<JObject> _templates;
 
         public string Identifier
         {
@@ -18,17 +19,16 @@ namespace TweakMaker
             set => textBox.Text = value;
         }
 
-        public TemplateIdentifierControl(IEnumerable<JObject> templates)
+        public TemplateIdentifierControl(DumpData dump, string dumpCategory)
         {
             InitializeComponent();
-            _templates = templates;
+            _dump = dump;
+            _dumpCategory = dumpCategory;
         }
 
         private void button_Click(object sender, EventArgs e)
         {
-            if (_templates == null) return;
-
-            var dialog = new DialogSelectTemplate("Select Template", _templates, Identifier);
+            var dialog = new DialogSelectTemplate("Select Template", _dump, _dumpCategory, Identifier);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Identifier = dialog.SelectedIdentifier;

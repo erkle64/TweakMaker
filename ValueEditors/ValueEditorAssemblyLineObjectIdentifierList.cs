@@ -16,7 +16,7 @@ namespace TweakMaker.ValueEditors
         {
             base.InitializeComponents(table, rowIndex);
 
-            _templateIdentifierListControl = new(_dump.assemblyLineObjects);
+            _templateIdentifierListControl = new(_dump, "assemblyLineObjects");
             table.Controls.Add(_templateIdentifierListControl, 1, rowIndex);
 
             _templateIdentifierListControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;

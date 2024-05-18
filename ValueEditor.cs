@@ -9,6 +9,7 @@ namespace TweakMaker
         protected string _key = string.Empty;
         protected DumpData _dump = new();
         protected string[] _extraValues = [];
+        protected ToolTip? _toolTip;
 
         private Label? _label;
 
@@ -26,13 +27,14 @@ namespace TweakMaker
 
         public abstract JToken? GetNewToken();
 
-        public void Initialize(string labelText, JObject template, string key, DumpData dump, string[] extraValues)
+        public void Initialize(string labelText, JObject template, string key, DumpData dump, string[] extraValues, ToolTip toolTip)
         {
             _labelText = labelText;
             _template = template;
             _key = key;
             _dump = dump;
             _extraValues = extraValues;
+            _toolTip = toolTip;
         }
 
         public virtual void InitializeComponents(TableLayoutPanel table, int rowIndex)
@@ -44,6 +46,7 @@ namespace TweakMaker
             _label.TextAlign = ContentAlignment.MiddleRight;
             _label.Text = _labelText;
             _label.AutoSize = true;
+            _toolTip?.SetToolTip(_label, _key);
         }
     }
 }

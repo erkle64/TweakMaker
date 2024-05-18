@@ -16,7 +16,7 @@ namespace TweakMaker.ValueEditors
         {
             base.InitializeComponents(table, rowIndex);
 
-            _templateIdentifierListControl = new(_dump.terrainBlocks);
+            _templateIdentifierListControl = new(_dump, "terrain");
             table.Controls.Add(_templateIdentifierListControl, 1, rowIndex);
 
             _templateIdentifierListControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;

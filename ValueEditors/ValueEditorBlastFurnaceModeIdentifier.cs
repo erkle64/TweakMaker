@@ -15,7 +15,7 @@ namespace TweakMaker.ValueEditors
         {
             base.InitializeComponents(table, rowIndex);
 
-            _templateIdentifierControl = new(_dump.blastFurnaceModes.Values);
+            _templateIdentifierControl = new(_dump, "blastFurnaceModes");
             table.Controls.Add(_templateIdentifierControl, 1, rowIndex);
 
             _templateIdentifierControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;

@@ -58,7 +58,7 @@ namespace TweakMaker.Controls
                     case 0:
                     case 1:
                         {
-                            var dialog = new DialogSelectTemplate("Select Fluid", _dump.elements.Values, listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
+                            var dialog = new DialogSelectTemplate("Select Fluid", _dump, "elements", listView.Items[e.Item.Index].SubItems[e.SubItem].Text);
                             if (dialog.ShowDialog() == DialogResult.OK)
                             {
                                 var identifier = dialog.SelectedIdentifier;
@@ -116,7 +116,7 @@ namespace TweakMaker.Controls
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var dialog = new DialogSelectTemplate("Select Fluid", _dump.elements.Values, "");
+            var dialog = new DialogSelectTemplate("Select Fluid", _dump, "elements", "");
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var identifier = dialog.SelectedIdentifier;
