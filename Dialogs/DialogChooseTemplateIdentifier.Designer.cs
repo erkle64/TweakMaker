@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             Label labelDescription;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogChooseTemplateIdentifier));
             textBoxTemplateIdentifier = new TextBox();
             buttonCreate = new Button();
             buttonCancel = new Button();
@@ -95,6 +96,7 @@
             Controls.Add(buttonCreate);
             Controls.Add(textBoxTemplateIdentifier);
             Controls.Add(labelDescription);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "DialogChooseTemplateIdentifier";
             Text = "Template Identifier";
             ResumeLayout(false);

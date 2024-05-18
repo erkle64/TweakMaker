@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BlueMystic;
+using Newtonsoft.Json.Linq;
 using static TweakMaker.DialogSelectIcon;
 
 namespace TweakMaker
@@ -22,6 +23,8 @@ namespace TweakMaker
             listBoxSelectTemplate.Items.Clear();
             listBoxSelectTemplate.Items.AddRange(names.Where(x => x.Value.ContainsKey("name")).Select(kv => new TemplateData(kv.Value)).ToArray());
             if (!_dump.IsEmpty(_dumpCategory)) listBoxSelectTemplate.SelectedIndex = 0;
+
+            new DarkModeCS(this);
         }
 
         private void DialogSelectTemplate_Shown(object sender, EventArgs e)

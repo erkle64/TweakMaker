@@ -1,4 +1,6 @@
-﻿namespace TweakMaker
+﻿using BlueMystic;
+
+namespace TweakMaker
 {
     public partial class FormProgress : Form
     {
@@ -17,6 +19,8 @@
                 step = -1,
                 maximum = 100
             };
+
+            new DarkModeCS(this);
         }
 
         public void SetProgress(ProgressInfo progressInfo)

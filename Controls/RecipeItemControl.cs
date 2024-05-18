@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BlueMystic;
+using Newtonsoft.Json.Linq;
 
 namespace TweakMaker.Controls
 {
     public partial class RecipeItemControl : UserControl
     {
         private DumpData _dump;
+        private bool _showPercentage;
 
         public RecipeItemControl()
         {
@@ -16,6 +18,7 @@ namespace TweakMaker.Controls
         public void LoadData(DumpData dump, JObject? data, bool showPercentage)
         {
             _dump = dump;
+            _showPercentage = showPercentage;
 
             listView.Items.Clear();
             if (data != null)
@@ -100,7 +103,7 @@ namespace TweakMaker.Controls
                                             {
                                                 using (new CenterWinDialog(form))
                                                 {
-                                                    MessageBox.Show(this, "Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                    Messenger.MessageBox("Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                                 }
                                             }
                                             return;
@@ -143,7 +146,7 @@ namespace TweakMaker.Controls
                             {
                                 using (new CenterWinDialog(form))
                                 {
-                                    MessageBox.Show(this, "Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    Messenger.MessageBox("Item already exists in list.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             }
                             return;
@@ -166,8 +169,7 @@ namespace TweakMaker.Controls
                 {
                     using (new CenterWinDialog(form))
                     {
-                        if (MessageBox.Show(
-                            this,
+                        if (Messenger.MessageBox(
                             $"Remove {names}?",
                             "Remove",
                             MessageBoxButtons.OKCancel,
@@ -189,6 +191,16 @@ namespace TweakMaker.Controls
                     }
                 }
             }
+        }
+
+        private void RecipeItemControl_Resize(object sender, EventArgs e)
+        {
+            listView.ResizeAutoSizeColumn(listView.Columns.Count - (_showPercentage ? 1 : 2));
+        }
+
+        private void listView_Layout(object sender, LayoutEventArgs e)
+        {
+            listView.ResizeAutoSizeColumn(listView.Columns.Count - (_showPercentage ? 1 : 2));
         }
     }
 }

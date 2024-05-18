@@ -1,3 +1,4 @@
+using BlueMystic;
 using BrightIdeasSoftware;
 using Narod.SteamGameFinder;
 using Newtonsoft.Json.Linq;
@@ -34,7 +35,7 @@ How to generate dump:
         private readonly DumpData _tweakAdditionsDump;
         private readonly DumpData _tweakChangesDump;
         private readonly FormProgress _progressBox;
-
+        private readonly DarkModeCS _darkMode;
         private readonly string _baseTitle = string.Empty;
         private string _currentTweakPath = string.Empty;
         private bool _isTweakChanged = false;
@@ -46,6 +47,12 @@ How to generate dump:
         public FormMain()
         {
             InitializeComponent();
+
+            _darkMode = new DarkModeCS(this);
+            if (_darkMode.IsDarkMode)
+            {
+                treeViewTweak.AlternateRowBackColor = Color.FromArgb(68, 68, 68);
+            }
 
             _baseTitle = Text;
 
@@ -115,7 +122,7 @@ How to generate dump:
                     || !Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathIcons))
                     || !File.Exists(Path.Combine(inputFoundryPath.Text, dumpPathIconsList)))
                 {
-                    MessageBox.Show(missingDumpText, "Missing Dumps!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Messenger.MessageBox(missingDumpText, "Missing Dumps!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -129,6 +136,7 @@ How to generate dump:
 
                 menuStripMain.Enabled = false;
                 panelOuter.Enabled = false;
+                treeViewTweak.Visible = false;
                 _progressBox.Show(this);
                 _progressBox.Location = new Point(
                     Location.X + Width / 2 - _progressBox.ClientSize.Width / 2,
@@ -145,6 +153,7 @@ How to generate dump:
                     {
                         menuStripMain.Enabled = true;
                         panelOuter.Enabled = true;
+                        treeViewTweak.Visible = true;
                         _progressBox.Close();
                     }
                 });
@@ -780,7 +789,7 @@ How to generate dump:
             {
                 using (new CenterWinDialog(this))
                 {
-                    switch (MessageBox.Show("Do you want to save changes?", "Tweak Maker", MessageBoxButtons.YesNoCancel))
+                    switch (Messenger.MessageBox("Do you want to save changes?", "Tweak Maker", MessageBoxButtons.YesNoCancel))
                     {
                         case DialogResult.Cancel:
                             return false;
@@ -872,7 +881,7 @@ How to generate dump:
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -986,7 +995,7 @@ How to generate dump:
 
             using (new CenterWinDialog(this))
             {
-                if (MessageBox.Show($"Delete {tweakEntry.Key}?", tweakEntry.Depth == 3 ? "Delete Tweak Entry" : "Delete Tweak Field", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (Messenger.MessageBox($"Delete {tweakEntry.Key}?", tweakEntry.Depth == 3 ? "Delete Tweak Entry" : "Delete Tweak Field", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     tweakEntry.Delete();
                     SetTweakChanged();
@@ -1025,6 +1034,11 @@ How to generate dump:
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!AskForSaveIfChanged()) e.Cancel = true;
+        }
+
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+            if (_progressBox != null && _progressBox.Visible) _progressBox.Focus();
         }
     }
 }

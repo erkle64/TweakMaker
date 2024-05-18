@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogSelectTemplate));
             listBoxSelectTemplate = new ListBox();
             buttonCancel = new Button();
             buttonSelect = new Button();
@@ -76,6 +77,7 @@
             Controls.Add(buttonSelect);
             Controls.Add(buttonCancel);
             Controls.Add(listBoxSelectTemplate);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "DialogSelectTemplate";
             Text = "DialogSelectTemplate";
             Shown += DialogSelectTemplate_Shown;

@@ -33,6 +33,7 @@ namespace TweakMaker
             components = new System.ComponentModel.Container();
             ToolStripMenuItem editToolStripMenuItem;
             ToolStripMenuItem deleteToolStripMenuItem;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             menuStripMain = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
@@ -211,28 +212,28 @@ namespace TweakMaker
             // addItemToolStripMenuItem
             // 
             addItemToolStripMenuItem.Name = "addItemToolStripMenuItem";
-            addItemToolStripMenuItem.Size = new Size(180, 22);
+            addItemToolStripMenuItem.Size = new Size(154, 22);
             addItemToolStripMenuItem.Text = "Item";
             addItemToolStripMenuItem.Click += addItemToolStripMenuItem_Click;
             // 
             // addFluidToolStripMenuItem
             // 
             addFluidToolStripMenuItem.Name = "addFluidToolStripMenuItem";
-            addFluidToolStripMenuItem.Size = new Size(180, 22);
+            addFluidToolStripMenuItem.Size = new Size(154, 22);
             addFluidToolStripMenuItem.Text = "Element (Fluid)";
             addFluidToolStripMenuItem.Click += addFluidToolStripMenuItem_Click;
             // 
             // addRecipeToolStripMenuItem
             // 
             addRecipeToolStripMenuItem.Name = "addRecipeToolStripMenuItem";
-            addRecipeToolStripMenuItem.Size = new Size(180, 22);
+            addRecipeToolStripMenuItem.Size = new Size(154, 22);
             addRecipeToolStripMenuItem.Text = "Recipe";
             addRecipeToolStripMenuItem.Click += addRecipeToolStripMenuItem_Click;
             // 
             // addResearchToolStripMenuItem
             // 
             addResearchToolStripMenuItem.Name = "addResearchToolStripMenuItem";
-            addResearchToolStripMenuItem.Size = new Size(180, 22);
+            addResearchToolStripMenuItem.Size = new Size(154, 22);
             addResearchToolStripMenuItem.Text = "Research";
             addResearchToolStripMenuItem.Click += addResearchToolStripMenuItem_Click;
             // 
@@ -240,14 +241,14 @@ namespace TweakMaker
             // 
             addTerrainToolStripMenuItem.Enabled = false;
             addTerrainToolStripMenuItem.Name = "addTerrainToolStripMenuItem";
-            addTerrainToolStripMenuItem.Size = new Size(180, 22);
+            addTerrainToolStripMenuItem.Size = new Size(154, 22);
             addTerrainToolStripMenuItem.Text = "Terrain";
             // 
             // addBuildingToolStripMenuItem
             // 
             addBuildingToolStripMenuItem.Enabled = false;
             addBuildingToolStripMenuItem.Name = "addBuildingToolStripMenuItem";
-            addBuildingToolStripMenuItem.Size = new Size(180, 22);
+            addBuildingToolStripMenuItem.Size = new Size(154, 22);
             addBuildingToolStripMenuItem.Text = "Building";
             // 
             // openFileDialog
@@ -314,7 +315,7 @@ namespace TweakMaker
             treeViewTweak.AutoArrange = false;
             treeViewTweak.Columns.AddRange(new ColumnHeader[] { columnHeaderKeys, columnHeaderValues });
             treeViewTweak.FullRowSelect = true;
-            treeViewTweak.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            treeViewTweak.HeaderStyle = ColumnHeaderStyle.None;
             treeViewTweak.Location = new Point(3, 35);
             treeViewTweak.MultiSelect = false;
             treeViewTweak.Name = "treeViewTweak";
@@ -384,10 +385,12 @@ namespace TweakMaker
             ClientSize = new Size(688, 484);
             Controls.Add(panelOuter);
             Controls.Add(menuStripMain);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStripMain;
             Name = "FormMain";
             Text = "Tweak Maker v0.1.0";
             FormClosing += FormMain_FormClosing;
+            Shown += FormMain_Shown;
             menuStripMain.ResumeLayout(false);
             menuStripMain.PerformLayout();
             panelFoundryPath.ResumeLayout(false);

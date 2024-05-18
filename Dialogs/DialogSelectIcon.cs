@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BlueMystic;
+using Newtonsoft.Json.Linq;
 using System.Configuration;
 
 namespace TweakMaker
@@ -16,6 +17,8 @@ namespace TweakMaker
             _defaultSelection = defaultSelection;
             listBoxSelectIcon.Items.Clear();
             listBoxSelectIcon.Items.AddRange(_icons.Select(kv => new IconData(kv.Key, kv.Value)).ToArray());
+
+            new DarkModeCS(this);
         }
 
         private void DialogSelectIcon_Shown(object sender, EventArgs e)

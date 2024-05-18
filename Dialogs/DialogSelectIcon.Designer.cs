@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogSelectIcon));
             listBoxSelectIcon = new ListBox();
             buttonCancel = new Button();
             buttonSelect = new Button();
@@ -88,6 +89,7 @@
             Controls.Add(buttonSelect);
             Controls.Add(buttonCancel);
             Controls.Add(listBoxSelectIcon);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "DialogSelectIcon";
             Text = "DialogSelectIcon";
             Shown += DialogSelectIcon_Shown;

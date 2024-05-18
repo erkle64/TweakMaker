@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BlueMystic;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using TweakMaker.ValueEditors;
@@ -15,6 +16,8 @@ namespace TweakMaker
         public DialogEditTemplate(JObject template, DumpData dump, Templates.Field[] fields)
         {
             InitializeComponent();
+
+            new DarkModeCS(this);
 
             _template = template;
             _dump = dump;
@@ -81,7 +84,7 @@ namespace TweakMaker
 
             using (new CenterWinDialog(this))
             {
-                if (MessageBox.Show("All changes will be lost.\nCancel anyway?", "Cancel", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if (Messenger.MessageBox("All changes will be lost.\nCancel anyway?", "Cancel", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
                     DialogResult = DialogResult.Cancel;
                 }

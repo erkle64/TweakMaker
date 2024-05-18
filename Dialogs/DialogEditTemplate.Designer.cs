@@ -30,6 +30,7 @@ namespace TweakMaker
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogEditTemplate));
             tableTemplate = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
             numericUpDown4 = new NumericUpDown();
@@ -77,7 +78,7 @@ namespace TweakMaker
             tableTemplate.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableTemplate.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableTemplate.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableTemplate.Size = new Size(825, 0);
+            tableTemplate.Size = new Size(887, 0);
             tableTemplate.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -120,7 +121,7 @@ namespace TweakMaker
             // 
             buttonCancel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buttonCancel.AutoSize = true;
-            buttonCancel.Location = new Point(762, 11);
+            buttonCancel.Location = new Point(824, 11);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 25);
             buttonCancel.TabIndex = 1;
@@ -131,7 +132,7 @@ namespace TweakMaker
             // 
             buttonSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buttonSave.AutoSize = true;
-            buttonSave.Location = new Point(666, 11);
+            buttonSave.Location = new Point(728, 11);
             buttonSave.Name = "buttonSave";
             buttonSave.Size = new Size(90, 25);
             buttonSave.TabIndex = 2;
@@ -146,7 +147,7 @@ namespace TweakMaker
             panelScroll.Controls.Add(tableTemplate);
             panelScroll.Location = new Point(12, 39);
             panelScroll.Name = "panelScroll";
-            panelScroll.Size = new Size(825, 506);
+            panelScroll.Size = new Size(887, 506);
             panelScroll.TabIndex = 3;
             panelScroll.Resize += panelScroll_Resize;
             // 
@@ -160,10 +161,11 @@ namespace TweakMaker
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = buttonCancel;
-            ClientSize = new Size(849, 557);
+            ClientSize = new Size(911, 557);
             Controls.Add(panelScroll);
             Controls.Add(buttonSave);
             Controls.Add(buttonCancel);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "DialogEditTemplate";
             Text = "DialogEditTemplate";
             FormClosing += DialogChangeRecipe_FormClosing;

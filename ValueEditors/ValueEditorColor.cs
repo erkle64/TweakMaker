@@ -45,6 +45,7 @@ namespace TweakMaker.ValueEditors
             _colorPanel.BorderStyle = BorderStyle.FixedSingle;
             _colorPanel.Height = 40;
             _colorPanel.Width = 100;
+            _colorPanel.BackColor = Color.Magenta;
             _colorPanel.Click += colorPanel_Click;
             if (GetOriginalToken() is JObject original)
             {

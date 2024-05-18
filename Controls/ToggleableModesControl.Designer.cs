@@ -74,6 +74,7 @@
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
             listView.SubItemClicked += listView_SubItemClicked;
+            listView.Resize += listView_Resize;
             // 
             // buttonAdd
             // 

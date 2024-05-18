@@ -49,7 +49,7 @@
             // columnHeaderAmount
             // 
             columnHeaderAmount.Text = "Amount";
-            columnHeaderAmount.Width = 80;
+            columnHeaderAmount.Width = 381;
             // 
             // columnHeaderName
             // 
@@ -71,6 +71,7 @@
             listView.View = View.Details;
             listView.SubItemClicked += listView_SubItemClicked;
             listView.SubItemEndEditing += listView_SubItemEndEditing;
+            listView.Resize += listView_Resize;
             // 
             // buttonAdd
             // 

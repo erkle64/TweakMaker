@@ -62,7 +62,7 @@
             // columnHeaderPercentage
             // 
             columnHeaderPercentage.Text = "Percentage";
-            columnHeaderPercentage.Width = 80;
+            columnHeaderPercentage.Width = 301;
             // 
             // listView
             // 
@@ -78,6 +78,7 @@
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
             listView.SubItemClicked += listView_SubItemClicked;
+            listView.Layout += listView_Layout;
             // 
             // buttonAdd
             // 
@@ -129,6 +130,7 @@
             Controls.Add(listView);
             Name = "RecipeItemControl";
             Size = new Size(826, 92);
+            Resize += RecipeItemControl_Resize;
             ((System.ComponentModel.ISupportInitialize)numericUpDownAmount).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownPercentage).EndInit();
             ResumeLayout(false);

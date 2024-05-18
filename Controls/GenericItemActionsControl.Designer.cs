@@ -46,7 +46,7 @@
             // columnHeaderHotkey
             // 
             columnHeaderHotkey.Text = "Hotkey";
-            columnHeaderHotkey.Width = 200;
+            columnHeaderHotkey.Width = 541;
             // 
             // listView
             // 
@@ -62,6 +62,7 @@
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
             listView.SubItemClicked += listView_SubItemClicked;
+            listView.Resize += listView_Resize;
             // 
             // buttonAdd
             // 

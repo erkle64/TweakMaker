@@ -39,7 +39,7 @@
             // columnHeaderValue
             // 
             columnHeaderValue.Text = "Identifier";
-            columnHeaderValue.Width = 400;
+            columnHeaderValue.Width = 741;
             // 
             // listView
             // 
@@ -57,6 +57,7 @@
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
             listView.SubItemClicked += listView_SubItemClicked;
+            listView.Resize += listView_Resize;
             // 
             // buttonAdd
             // 

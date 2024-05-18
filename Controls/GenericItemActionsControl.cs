@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BlueMystic;
+using Newtonsoft.Json.Linq;
 
 namespace TweakMaker.Controls
 {
@@ -67,8 +68,7 @@ namespace TweakMaker.Controls
                 {
                     using (new CenterWinDialog(form))
                     {
-                        if (MessageBox.Show(
-                            this,
+                        if (Messenger.MessageBox(
                             $"Remove {names}?",
                             "Remove",
                             MessageBoxButtons.OKCancel,
@@ -90,6 +90,11 @@ namespace TweakMaker.Controls
                     }
                 }
             }
+        }
+
+        private void listView_Resize(object sender, EventArgs e)
+        {
+            listView.ResizeAutoSizeColumn(listView.Columns.Count - 1);
         }
     }
 }

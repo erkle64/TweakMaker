@@ -30,9 +30,9 @@
         {
             ColumnHeader columnHeaderIdentifier;
             listView = new ListViewEx.ListViewEx();
+            columnHeaderName = new ColumnHeader();
             buttonAdd = new Button();
             buttonRemove = new Button();
-            columnHeaderName = new ColumnHeader();
             columnHeaderIdentifier = new ColumnHeader();
             SuspendLayout();
             // 
@@ -56,6 +56,12 @@
             listView.TabIndex = 0;
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
+            listView.Resize += listView_Resize;
+            // 
+            // columnHeaderName
+            // 
+            columnHeaderName.Text = "Name";
+            columnHeaderName.Width = 200;
             // 
             // buttonAdd
             // 
@@ -78,11 +84,6 @@
             buttonRemove.Text = "Remove";
             buttonRemove.UseVisualStyleBackColor = true;
             buttonRemove.Click += buttonRemove_Click;
-            // 
-            // columnHeaderName
-            // 
-            columnHeaderName.Text = "Name";
-            columnHeaderName.Width = 200;
             // 
             // TemplateIdentifierListControl
             // 
