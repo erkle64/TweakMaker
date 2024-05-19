@@ -1,6 +1,5 @@
 ﻿using BlueMystic;
 using Newtonsoft.Json.Linq;
-using static TweakMaker.DialogSelectIcon;
 
 namespace TweakMaker
 {
@@ -21,7 +20,7 @@ namespace TweakMaker
             _defaultSelection = defaultSelection;
             var names = _dump.Flatten(_dumpCategory);
             listBoxSelectTemplate.Items.Clear();
-            listBoxSelectTemplate.Items.AddRange(names.Where(x => x.Value.ContainsKey("name")).Select(kv => new TemplateData(kv.Value)).ToArray());
+            listBoxSelectTemplate.Items.AddRange(names.Where(x => x.Value.ContainsKey("name")).Select(kv => new TemplateData(kv.Key, kv.Value)).ToArray());
             if (!_dump.IsEmpty(_dumpCategory)) listBoxSelectTemplate.SelectedIndex = 0;
 
             new DarkModeCS(this);
@@ -51,9 +50,9 @@ namespace TweakMaker
             }
         }
 
-        public class TemplateData(JObject json)
+        public class TemplateData(string identifier, JObject json)
         {
-            public string identifier = json["identifier"]?.ToString() ?? "_error_";
+            public string identifier = identifier;
             public string name = json["name"]?.ToString() ?? "_error_";
             public JObject json = json;
 

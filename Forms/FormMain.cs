@@ -58,7 +58,7 @@ How to generate dump:
 
             _dump = new();
             _tweakChangesDump = new(_dump);
-            _tweakAdditionsDump = new(_tweakAdditionsDump);
+            _tweakAdditionsDump = new(_tweakChangesDump);
 
             _progressBox = new FormProgress();
 
@@ -664,7 +664,7 @@ How to generate dump:
 
         private void DoChange(string identifier, JObject originalTemplate, string category)
         {
-            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _tweakChangesDump, Templates.Get(category));
+            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _tweakAdditionsDump, Templates.Get(category));
             if (dialogEditTemplate.ShowDialog(this) == DialogResult.OK)
             {
                 var newTemplate = dialogEditTemplate.BuildTemplate();
@@ -697,7 +697,7 @@ How to generate dump:
 
         private void DoAddition(string identifier, string previousIdentifier, string templateIdentifier, JObject originalTemplate, string category)
         {
-            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _dump, Templates.Get(category));
+            using var dialogEditTemplate = new DialogEditTemplate(originalTemplate, _tweakAdditionsDump, Templates.Get(category));
             if (dialogEditTemplate.ShowDialog(this) == DialogResult.OK)
             {
                 var newTemplate = dialogEditTemplate.BuildTemplate();
