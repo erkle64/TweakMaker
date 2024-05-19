@@ -388,7 +388,7 @@ namespace TweakMaker
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStripMain;
             Name = "FormMain";
-            Text = "Tweak Maker v0.1.0";
+            Text = "Tweak Maker v0.1.1";
             FormClosing += FormMain_FormClosing;
             Shown += FormMain_Shown;
             menuStripMain.ResumeLayout(false);

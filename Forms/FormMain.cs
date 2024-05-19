@@ -57,8 +57,8 @@ How to generate dump:
             _baseTitle = Text;
 
             _dump = new();
-            _tweakAdditionsDump = new(_dump);
-            _tweakChangesDump = new(_tweakAdditionsDump);
+            _tweakChangesDump = new(_dump);
+            _tweakAdditionsDump = new(_tweakAdditionsDump);
 
             _progressBox = new FormProgress();
 
