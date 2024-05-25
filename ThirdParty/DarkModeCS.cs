@@ -558,11 +558,13 @@ namespace BlueMystic
 		{
 			try
 			{
-				return (int)Microsoft.Win32.Registry.GetValue(
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+                return (int)Microsoft.Win32.Registry.GetValue(
 					@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
 					GetSystemColorModeInstead ? "SystemUsesLightTheme" : "AppsUseLightTheme",
 					-1);
-			}
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+            }
 			catch
 			{
 				return 1;

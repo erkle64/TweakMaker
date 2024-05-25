@@ -83,6 +83,46 @@ namespace TweakMaker
             return new CultureInfo("en").TextInfo.ToTitleCase((identifier.StartsWith("_base_") ? identifier[6..] : identifier).ToLower().Replace("_", " ")); ;
         }
 
+        public struct NameMap(string name, JObject template)
+        {
+            public string name = name;
+            public JObject template = template;
+        }
+        public Dictionary<string, NameMap> BuildNameMap(string category)
+        {
+            var dictionary = new Dictionary<string, NameMap>();
+            BuildNameMap(category, dictionary);
+            return dictionary;
+        }
+
+        private void BuildNameMap(string category, Dictionary<string, NameMap> dictionary)
+        {
+            _parent?.BuildNameMap(category, dictionary);
+
+            if (_templates.TryGetValue(category, out var templateMap))
+            {
+                foreach (var kv in templateMap)
+                {
+                    if (kv.Value != null)
+                    {
+                        if (dictionary.TryGetValue(kv.Key, out var existing))
+                        {
+                            if (string.IsNullOrEmpty(existing.name))
+                            {
+                                var name = kv.Value["name"]?.Value<string>() ?? string.Empty;
+                                dictionary[kv.Key] = new NameMap(name, existing.template);
+                            }
+                        }
+                        else
+                        {
+                            var name = kv.Value["name"]?.Value<string>() ?? string.Empty;
+                            dictionary.Add(kv.Key, new NameMap(name, kv.Value));
+                        }
+                    }
+                }
+            }
+        }
+
         public Dictionary<string, JObject> Flatten(string category)
         {
             var dictionary = new Dictionary<string, JObject>();
@@ -102,6 +142,11 @@ namespace TweakMaker
                     {
                         if (dictionary.TryGetValue(kv.Key, out var existing))
                         {
+                            existing = (JObject)existing.DeepClone();
+                            foreach (var kv2 in kv.Value)
+                            {
+                                if (existing.ContainsKey(kv2.Key)) existing.Remove(kv2.Key);
+                            }
                             existing.Merge(kv.Value, new JsonMergeSettings
                             {
                                 MergeArrayHandling = MergeArrayHandling.Replace,
@@ -137,6 +182,10 @@ namespace TweakMaker
                 }
                 else
                 {
+                    foreach (var kv in template)
+                    {
+                        if (flattened.ContainsKey(kv.Key)) flattened.Remove(kv.Key);
+                    }
                     flattened.Merge(template, new JsonMergeSettings
                     {
                         MergeArrayHandling = MergeArrayHandling.Replace,
@@ -150,6 +199,7 @@ namespace TweakMaker
         public string GetItemName(string identifier) => GetTemplateName("items", identifier);
         public string GetElementName(string identifier) => GetTemplateName("elements", identifier);
         public string GetResearchName(string identifier) => GetTemplateName("research", identifier);
+        public string GetBuildingName(string identifier) => GetTemplateName("buildings", identifier);
         public string GetBlastFurnaceModeName(string identifier) => GetTemplateName("blastFurnaceModes", identifier);
         public string GetAssemblyLineObjectName(string identifier) => GetTemplateName("assemblyLineObjects", identifier);
         public string GetTerrainBlockName(string identifier) => GetTemplateName("terrain", identifier);

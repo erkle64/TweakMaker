@@ -40,7 +40,25 @@
     <Compile Update="Controls\GenericItemActionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Controls\AABB3DListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ModularBuildingConnectionNodeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ModularBuildingConnectionNodeDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\Vector3IntListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\TemplateIdentifierListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\DragModesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\Vector3IntControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\Vector4Control.cs">

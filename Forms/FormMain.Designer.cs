@@ -163,28 +163,28 @@ namespace TweakMaker
             // itemToolStripMenuItem
             // 
             itemToolStripMenuItem.Name = "itemToolStripMenuItem";
-            itemToolStripMenuItem.Size = new Size(154, 22);
+            itemToolStripMenuItem.Size = new Size(180, 22);
             itemToolStripMenuItem.Text = "Item";
             itemToolStripMenuItem.Click += itemToolStripMenuItem_Click;
             // 
             // fluidToolStripMenuItem
             // 
             fluidToolStripMenuItem.Name = "fluidToolStripMenuItem";
-            fluidToolStripMenuItem.Size = new Size(154, 22);
+            fluidToolStripMenuItem.Size = new Size(180, 22);
             fluidToolStripMenuItem.Text = "Element (Fluid)";
             fluidToolStripMenuItem.Click += elementToolStripMenuItem_Click;
             // 
             // recipeToolStripMenuItem
             // 
             recipeToolStripMenuItem.Name = "recipeToolStripMenuItem";
-            recipeToolStripMenuItem.Size = new Size(154, 22);
+            recipeToolStripMenuItem.Size = new Size(180, 22);
             recipeToolStripMenuItem.Text = "Recipe";
             recipeToolStripMenuItem.Click += recipeToolStripMenuItem_Click;
             // 
             // researchToolStripMenuItem
             // 
             researchToolStripMenuItem.Name = "researchToolStripMenuItem";
-            researchToolStripMenuItem.Size = new Size(154, 22);
+            researchToolStripMenuItem.Size = new Size(180, 22);
             researchToolStripMenuItem.Text = "Research";
             researchToolStripMenuItem.Click += researchToolStripMenuItem_Click;
             // 
@@ -192,15 +192,15 @@ namespace TweakMaker
             // 
             terrainToolStripMenuItem.Enabled = false;
             terrainToolStripMenuItem.Name = "terrainToolStripMenuItem";
-            terrainToolStripMenuItem.Size = new Size(154, 22);
+            terrainToolStripMenuItem.Size = new Size(180, 22);
             terrainToolStripMenuItem.Text = "Terrain";
             // 
             // buildingToolStripMenuItem
             // 
-            buildingToolStripMenuItem.Enabled = false;
             buildingToolStripMenuItem.Name = "buildingToolStripMenuItem";
-            buildingToolStripMenuItem.Size = new Size(154, 22);
+            buildingToolStripMenuItem.Size = new Size(180, 22);
             buildingToolStripMenuItem.Text = "Building";
+            buildingToolStripMenuItem.Click += buildingToolStripMenuItem_Click;
             // 
             // addToolStripMenuItem
             // 
@@ -212,28 +212,28 @@ namespace TweakMaker
             // addItemToolStripMenuItem
             // 
             addItemToolStripMenuItem.Name = "addItemToolStripMenuItem";
-            addItemToolStripMenuItem.Size = new Size(154, 22);
+            addItemToolStripMenuItem.Size = new Size(180, 22);
             addItemToolStripMenuItem.Text = "Item";
             addItemToolStripMenuItem.Click += addItemToolStripMenuItem_Click;
             // 
             // addFluidToolStripMenuItem
             // 
             addFluidToolStripMenuItem.Name = "addFluidToolStripMenuItem";
-            addFluidToolStripMenuItem.Size = new Size(154, 22);
+            addFluidToolStripMenuItem.Size = new Size(180, 22);
             addFluidToolStripMenuItem.Text = "Element (Fluid)";
             addFluidToolStripMenuItem.Click += addFluidToolStripMenuItem_Click;
             // 
             // addRecipeToolStripMenuItem
             // 
             addRecipeToolStripMenuItem.Name = "addRecipeToolStripMenuItem";
-            addRecipeToolStripMenuItem.Size = new Size(154, 22);
+            addRecipeToolStripMenuItem.Size = new Size(180, 22);
             addRecipeToolStripMenuItem.Text = "Recipe";
             addRecipeToolStripMenuItem.Click += addRecipeToolStripMenuItem_Click;
             // 
             // addResearchToolStripMenuItem
             // 
             addResearchToolStripMenuItem.Name = "addResearchToolStripMenuItem";
-            addResearchToolStripMenuItem.Size = new Size(154, 22);
+            addResearchToolStripMenuItem.Size = new Size(180, 22);
             addResearchToolStripMenuItem.Text = "Research";
             addResearchToolStripMenuItem.Click += addResearchToolStripMenuItem_Click;
             // 
@@ -241,15 +241,15 @@ namespace TweakMaker
             // 
             addTerrainToolStripMenuItem.Enabled = false;
             addTerrainToolStripMenuItem.Name = "addTerrainToolStripMenuItem";
-            addTerrainToolStripMenuItem.Size = new Size(154, 22);
+            addTerrainToolStripMenuItem.Size = new Size(180, 22);
             addTerrainToolStripMenuItem.Text = "Terrain";
             // 
             // addBuildingToolStripMenuItem
             // 
-            addBuildingToolStripMenuItem.Enabled = false;
             addBuildingToolStripMenuItem.Name = "addBuildingToolStripMenuItem";
-            addBuildingToolStripMenuItem.Size = new Size(154, 22);
+            addBuildingToolStripMenuItem.Size = new Size(180, 22);
             addBuildingToolStripMenuItem.Text = "Building";
+            addBuildingToolStripMenuItem.Click += addBuildingToolStripMenuItem_Click;
             // 
             // openFileDialog
             // 
@@ -388,7 +388,7 @@ namespace TweakMaker
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStripMain;
             Name = "FormMain";
-            Text = "Tweak Maker v0.1.2";
+            Text = "Tweak Maker v0.1.3";
             FormClosing += FormMain_FormClosing;
             Shown += FormMain_Shown;
             menuStripMain.ResumeLayout(false);

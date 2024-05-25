@@ -27,7 +27,9 @@ namespace TweakMaker
         {
             if (_dump == null) return;
 
-            var dialog = new DialogSelectIcon(_dump.Icons, IconIdentifier);
+            var dump = _dump;
+            while (dump.Parent != null) dump = dump.Parent;
+            var dialog = new DialogSelectIcon(dump.Icons, IconIdentifier);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 IconIdentifier = dialog.SelectedIconName;

@@ -20,6 +20,7 @@ namespace TweakMaker
         private const string dumpPathReservoirs = @"tweakificator\Dumps\Reservoirs";
         private const string dumpPathIconsList = @"tweakificator\Dumps\Icons\__icons.txt";
         private const string dumpPathIcons = @"tweakificator\Dumps\Icons";
+        private const string dumpPathCustomIcons = @"tweaks\icons";
         private const string missingDumpText = @"Tweakificator dumps required.
 How to generate dump:
 1. Install Tweakificator v2.0.2+
@@ -458,6 +459,40 @@ How to generate dump:
                 progress.Report(progressInfo);
             }
 
+            if (Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathCustomIcons)))
+            {
+                var customIconFiles = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathCustomIcons));
+                progressInfo = new FormProgress.ProgressInfo
+                {
+                    label = "Loading custom icons...",
+                    step = 0,
+                    maximum = customIconFiles.Length,
+                    done = false
+                };
+                progress.Report(progressInfo);
+                foreach (var iconFile in customIconFiles)
+                {
+                    if (cancellationToken.IsCancellationRequested) return;
+
+                    Image? image = null;
+                    var iconName = Path.GetFileNameWithoutExtension(iconFile);
+                    if (File.Exists(iconFile))
+                    {
+                        image = Image.FromFile(iconFile);
+                    }
+
+                    if (image != null)
+                    {
+                        image = ImageTools.ResizeImage(image, 256, 256, 1.0f);
+                    }
+
+                    _dump.Icons[iconName] = image;
+
+                    progressInfo.step++;
+                    progress.Report(progressInfo);
+                }
+            }
+
             progressInfo.done = true;
             progress.Report(progressInfo);
         }
@@ -651,6 +686,10 @@ How to generate dump:
             if (additionTemplate != null)
             {
                 originalTemplate = (JObject)originalTemplate.DeepClone();
+                foreach (var kv in additionTemplate)
+                {
+                    if (originalTemplate.ContainsKey(kv.Key)) originalTemplate.Remove(kv.Key);
+                }
                 originalTemplate.Merge(additionTemplate, new JsonMergeSettings
                 {
                     MergeArrayHandling = MergeArrayHandling.Replace,
@@ -672,6 +711,11 @@ How to generate dump:
 
                 if (TryGetTweak(out var currentTemplate, "changes", category, identifier))
                 {
+                    currentTemplate = (JObject)currentTemplate.DeepClone();
+                    foreach (var kv in newTemplate)
+                    {
+                        if (currentTemplate.ContainsKey(kv.Key)) currentTemplate.Remove(kv.Key);
+                    }
                     currentTemplate.Merge(newTemplate, new JsonMergeSettings
                     {
                         MergeArrayHandling = MergeArrayHandling.Replace,
@@ -709,6 +753,11 @@ How to generate dump:
 
                 if (TryGetTweak(out var currentTemplate, "additions", category, previousIdentifier))
                 {
+                    currentTemplate = (JObject)currentTemplate.DeepClone();
+                    foreach (var kv in newTemplate)
+                    {
+                        if (currentTemplate.ContainsKey(kv.Key)) currentTemplate.Remove(kv.Key);
+                    }
                     currentTemplate.Merge(newTemplate, new JsonMergeSettings
                     {
                         MergeArrayHandling = MergeArrayHandling.Replace,
@@ -912,6 +961,11 @@ How to generate dump:
             BeginChangeTemplate("Select Research", "research");
         }
 
+        private void buildingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginChangeTemplate("Select Building", "buildings");
+        }
+
         private void addItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BeginAddTemplate("Select Template Item", "items");
@@ -930,6 +984,11 @@ How to generate dump:
         private void addResearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BeginAddTemplate("Select Template Research", "research");
+        }
+
+        private void addBuildingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginAddTemplate("Select Template Building", "buildings");
         }
 
         private void treeViewTweak_CellRightClick(object sender, CellRightClickEventArgs e)
