@@ -461,7 +461,7 @@ How to generate dump:
 
             if (Directory.Exists(Path.Combine(inputFoundryPath.Text, dumpPathCustomIcons)))
             {
-                var customIconFiles = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathCustomIcons));
+                var customIconFiles = Directory.GetFiles(Path.Combine(inputFoundryPath.Text, dumpPathCustomIcons), "*.png");
                 progressInfo = new FormProgress.ProgressInfo
                 {
                     label = "Loading custom icons...",
