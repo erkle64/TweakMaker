@@ -9,17 +9,17 @@ namespace TweakMaker
 {
     public partial class FormMain : Form
     {
-        private const string dumpPathBuildings = @"tweakificator\Dumps\Buildings";
-        private const string dumpPathItems = @"tweakificator\Dumps\Items";
-        private const string dumpPathElements = @"tweakificator\Dumps\Elements";
-        private const string dumpPathRecipes = @"tweakificator\Dumps\Recipes";
-        private const string dumpPathResearch = @"tweakificator\Dumps\Research";
-        private const string dumpPathBlastFurnaceModes = @"tweakificator\Dumps\BlastFurnaceModes";
-        private const string dumpPathAssemblyLineObjects = @"tweakificator\Dumps\AssemblyLineObjects";
-        private const string dumpPathTerrainBlocks = @"tweakificator\Dumps\TerrainBlocks";
-        private const string dumpPathReservoirs = @"tweakificator\Dumps\Reservoirs";
-        private const string dumpPathIconsList = @"tweakificator\Dumps\Icons\__icons.txt";
-        private const string dumpPathIcons = @"tweakificator\Dumps\Icons";
+        private const string dumpPathBuildings = @"tweakificator\dumps\buildings";
+        private const string dumpPathItems = @"tweakificator\dumps\items";
+        private const string dumpPathElements = @"tweakificator\dumps\elements";
+        private const string dumpPathRecipes = @"tweakificator\dumps\recipes";
+        private const string dumpPathResearch = @"tweakificator\dumps\research";
+        private const string dumpPathBlastFurnaceModes = @"tweakificator\dumps\blastFurnaceModes";
+        private const string dumpPathAssemblyLineObjects = @"tweakificator\dumps\assemblyLineObjects";
+        private const string dumpPathTerrainBlocks = @"tweakificator\dumps\terrain";
+        private const string dumpPathReservoirs = @"tweakificator\dumps\reservoirs";
+        private const string dumpPathIconsList = @"tweakificator\dumps\Icons\__icons.txt";
+        private const string dumpPathIcons = @"tweakificator\dumps\Icons";
         private const string dumpPathCustomIcons = @"tweaks\icons";
         private const string missingDumpText = @"Tweakificator dumps required.
 How to generate dump:
